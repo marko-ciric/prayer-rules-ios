@@ -14,7 +14,7 @@ The 150 Psalms of David in **Serbian (Cyrillic)** and **English**, for Orthodox 
 | Entry point | `PrayerRulesApp.swift` (`@main`) → `ContentView` |
 | State shape | `ContentView` holds `@State selected: Int?` (psalm number or nil) and `@State fontSize: CGFloat`. When `selected == nil` show `PsalmListView`, otherwise `PsalmReaderView`. Same shape as the old `App.jsx`. |
 | i18n | `LanguageManager` (`ObservableObject`, injected as an `@EnvironmentObject`). `language` is `.sr` or `.en`, persisted to `UserDefaults` under key `"psalter-lang"` (same key the web app used for `localStorage`, unrelated storage). Exposes `t` (`AppStrings`), `pocetak`, `napomene`, `puniTekst` — same shape as the old `useLanguage()`. |
-| Build | Open `ios/App/App.xcodeproj` in Xcode and run. **This repo has no macOS/Xcode toolchain available in the sandbox that built it** — the project file was hand-authored/edited as text and has *not* been compiled or run. Treat the first real Xcode open as the real first build; expect to fix small issues (a stray build-file reference, an asset name mismatch) that only Xcode's own project inspector would have caught. |
+| Build | Open `ios/App/App.xcodeproj` in Xcode and run. The project file was hand-authored as text in a sandbox with no macOS/Xcode toolchain, but **it has since been compiled**: CodeQL's Swift `autobuild` ran `xcodebuild` against it on a macOS runner twice, extracting 17/17 Swift files with 0 unresolved AST nodes (~464k nodes). So the pbxproj drives `xcodebuild` and every source type-checks. Not yet covered: linking, asset catalog compilation, code signing, and anything only visible at runtime. |
 
 ### Data model
 
@@ -111,7 +111,7 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 
 ### Highest-priority remaining work
 
-1. **Open `ios/App/App.xcodeproj` in real Xcode and fix whatever the first build surfaces.** This project was authored/edited as text without access to Xcode or a Swift toolchain — treat the pbxproj and Swift sources as unverified until a real build succeeds.
+1. **Open `ios/App/App.xcodeproj` in real Xcode and run it on a simulator.** The code is known to compile (see the Build row), so what's left to confirm is runtime behaviour and layout — the drop cap, the katizma chips, the font clamp, the SR/EN toggle — not whether it builds.
 2. **Rename the Xcode target from `App` to `PrayerRules`** — do this *in Xcode* (select the target → Identity and Type → Name, and let Xcode's rename refactor update the scheme, product name, and paths), not by hand-editing the pbxproj. `App` is a leftover Capacitor-generated name; it was deliberately left alone during the prayer-rules rename because renaming a target blind, with no way to build and check, risks breaking the project for cosmetic gain. Xcode does it safely in seconds. The bundle identifier is already `rs.prayerrules.app`.
 3. **Delete the legacy web app** (`src/`, `android/`, `index.html`, `vite.config.js`, `tailwind.config.js`, `postcss.config.js`, `package.json`, `package-lock.json`, `capacitor.config.json`) once the native app is confirmed working, and update `README.md` accordingly.
 4. **Bundle the real Cormorant Garamond / EB Garamond fonts** and wire them up via `Info.plist`'s `UIAppFonts`, replacing the `Theme.display()`/`Theme.serif()` system-font stand-ins.
@@ -120,7 +120,8 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 7. **iOS App Icon and Splash** — replace the Capacitor-era placeholders before any TestFlight/App Store submission. Needs design input.
 
 ### Secondary polish
-- No CI workflow. A GitHub Actions lane that runs `xcodebuild` (once a Mac runner or self-hosted macOS is available) would catch build regressions.
+- **Code scanning runs via GitHub's CodeQL default setup**, configured in repo settings rather than in-repo. There is deliberately no `.github/workflows/codeql.yml`: an advanced-config workflow cannot upload results while default setup is enabled, so the one inherited from `Psalter-Serbian-` was removed. Don't re-add a CodeQL workflow without first switching the repo from default to advanced setup.
+- No build CI. A GitHub Actions lane running `xcodebuild` on a macOS runner would catch build regressions directly, rather than relying on CodeQL's autobuild as a proxy.
 - No tests. Consider a small XCTest/XCUITest smoke test (list renders, language toggle works, font controls clamp) once the app builds.
 
 ## Conventions and small things
@@ -133,6 +134,7 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 
 ## Decision history
 
+- **2026-09**: Removed the inherited CodeQL workflow. Making `prayer-rules-ios` public auto-enabled code scanning **default setup**, and GitHub refuses SARIF from an advanced-config workflow while default setup owns scanning, so `.github/workflows/codeql.yml` failed on every run. Default setup covers Swift, so deleting the workflow lost no coverage. Its `javascript-typescript` half targeted the legacy web app that is slated for deletion anyway.
 - **2026-09**: Project moved to its own repository, `marko-ciric/prayer-rules-ios`, and renamed to **prayer-rules** at the project level only — `PsaltirApp` → `PrayerRulesApp`, bundle id `rs.psalter.app` → `rs.prayerrules.app`, docs retitled. The user-facing app name stayed **Псалтир/Psalter** deliberately: the content is the Psalter, so the displayed title is accurate; the broader "prayer rules" name anticipates future scope (morning/evening prayers, canons) rather than describing what ships today. The original `Psalter-Serbian-` repo still holds the pre-move history. Not a GitHub fork — forks can't target the same owner — but a new repo carrying the full history, merged with its own initial commit (MIT LICENSE + Xcode `.gitignore`).
 - **2026-09**: Converted from React/Vite/Capacitor web app (wrapped for iOS + Android) to a native SwiftUI, iPhone-only app. Reason: user requested Xcode/iPhone-only distribution with no web/WebView layer. The web app and Android wrapper are kept temporarily for reference and will be deleted once the native app builds successfully.
 - **2026-06**: English translation switched from KJV (with manual LXX renumber) → Brenton's Septuagint (1851). Reason: at the LXX/MT split boundaries (Ps 9, 113, 114, 115, 146, 147) the KJV remap is unfixable — KJV's verse divisions don't carve up the same way LXX does. Brenton translates directly from the Greek the Orthodox tradition uses, so verse numbers and divisions match Atanasije natively.
