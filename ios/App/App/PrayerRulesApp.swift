@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct PsaltirApp: App {
+struct PrayerRulesApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

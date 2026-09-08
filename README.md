@@ -1,6 +1,8 @@
-# Псалтир Светог цара Давида
+# Prayer Rules — Псалтир Светог цара Давида
 
-The 150 Psalms of David in Serbian (Cyrillic), based on the official Serbian Orthodox translation by Bishop Atanasije (Jevtić), translated from Church Slavonic and Greek (the Septuagint) — plus an English translation from Brenton's English Septuagint (1851).
+A native iPhone app of the 150 Psalms of David in Serbian (Cyrillic), based on the official Serbian Orthodox translation by Bishop Atanasije (Jevtić), translated from Church Slavonic and Greek (the Septuagint) — plus an English translation from Brenton's English Septuagint (1851).
+
+> The project/repo is named **prayer-rules**; the app itself is presented to users as **Псалтир**, since its content is the Psalter.
 
 **This repo is mid-conversion** from a React/Vite/Capacitor web app to a **native SwiftUI, iPhone-only app**. See `CLAUDE.md` for the full status. The native app is now the primary target; the original web app is kept temporarily for reference and will be removed.
 
@@ -14,7 +16,7 @@ Open in Xcode (15+, iOS 15+ deployment target) and run. Swift/SwiftUI, no third-
 
 ```
 ios/App/App/
-├── PsaltirApp.swift    # @main entry point
+├── PrayerRulesApp.swift    # @main entry point
 ├── Views/              # ContentView, PsalmListView, PsalmReaderView, etc.
 ├── Models/             # AppStrings (i18n copy), LanguageManager
 ├── Data/               # Katizme, PocetakSr/En, NapomeneSr/En, PuniTekstSr/En
