@@ -4,6 +4,8 @@ The 150 Psalms of David in **Serbian (Cyrillic)** and **English**, for Orthodox 
 
 **Naming**: the *project/repo* is `prayer-rules` (`marko-ciric/prayer-rules-ios`); the *app* still presents itself to users as **Псалтир / Psalter**, because its content is the Psalter. Keep that split — rename project identifiers freely, but don't touch `AppStrings.title`, `CFBundleDisplayName`, or the word "Psalter"/"Псалтир" where it names the liturgical book. If the app's scope later broadens beyond the Psalter (morning/evening prayers, canons, akathists), that's when the user-facing name should change too.
 
+**Identifiers are English-only.** Type, property, function and file names use English (`Kathisma`, `number`, `range`, `psalms`, `openingLines`, `notes`, `fullText`, `verse`). Serbian and Church Slavonic appear **only inside string literals** — the psalm text and the `AppStrings.sr` UI copy. Don't reintroduce Serbian identifiers, and equally don't "translate" content strings: the Serbian text is Cyrillic and stays exactly as it is.
+
 **This repo is mid-conversion.** The app used to be a React/Vite/Capacitor web app wrapped for iOS. It is being converted to a **native SwiftUI, iPhone-only app** (no Capacitor, no WebView, no Android). The native app lives under `ios/App/App/` and is now the primary target — read that section first. The original web app under `src/`, `android/`, and the root Vite/Capacitor config files (`index.html`, `vite.config.js`, `tailwind.config.js`, `postcss.config.js`, `package.json`, `capacitor.config.json`) are **kept only as a reference/parity check** during the transition and are slated for deletion once the native app has been reviewed and built successfully in Xcode — don't add new features to them.
 
 ## Native iOS app (`ios/App/App/`)
@@ -13,7 +15,7 @@ The 150 Psalms of David in **Serbian (Cyrillic)** and **English**, for Orthodox 
 | Stack | Swift, SwiftUI, iOS 15+. No third-party deps, no Capacitor, no WebView. iPhone only (`TARGETED_DEVICE_FAMILY = 1`). |
 | Entry point | `PrayerRulesApp.swift` (`@main`) → `ContentView` |
 | State shape | `ContentView` holds `@State selected: Int?` (psalm number or nil) and `@State fontSize: CGFloat`. When `selected == nil` show `PsalmListView`, otherwise `PsalmReaderView`. Same shape as the old `App.jsx`. |
-| i18n | `LanguageManager` (`ObservableObject`, injected as an `@EnvironmentObject`). `language` is `.sr` or `.en`, persisted to `UserDefaults` under key `"psalter-lang"` (same key the web app used for `localStorage`, unrelated storage). Exposes `t` (`AppStrings`), `pocetak`, `napomene`, `puniTekst` — same shape as the old `useLanguage()`. |
+| i18n | `LanguageManager` (`ObservableObject`, injected as an `@EnvironmentObject`). `language` is `.sr` or `.en`, persisted to `UserDefaults` under key `"psalter-lang"` (same key the web app used for `localStorage`, unrelated storage). Exposes `t` (`AppStrings`), `openingLines`, `notes`, `fullText` — same shape as the old `useLanguage()`. |
 | Build | Open `ios/App/App.xcodeproj` in Xcode and run. The project file was hand-authored as text in a sandbox with no macOS/Xcode toolchain, but **it has since been compiled**: CodeQL's Swift `autobuild` ran `xcodebuild` against it on a macOS runner twice, extracting 17/17 Swift files with 0 unresolved AST nodes (~464k nodes). So the pbxproj drives `xcodebuild` and every source type-checks. Not yet covered: linking, asset catalog compilation, code signing, and anything only visible at runtime. |
 
 ### Data model
@@ -22,18 +24,18 @@ Mirrors the old `src/data/` structure, transcribed 1:1 (verse text and verse cou
 
 ```
 ios/App/App/Data/
-├── Katizme.swift        # 20 katizma groupings — [Katizma(broj:opseg:psalmi:)]
-├── PocetakSr.swift      # SR opening lines, [Int: String], all 150
-├── PocetakEn.swift      # EN opening lines, [Int: String], all 150 (still KJV-remapped, see Open work)
-├── NapomeneSr.swift     # SR liturgical notes, [Int: String], ~30 entries
-├── NapomeneEn.swift     # EN liturgical notes, [Int: String], ~30 entries (parity with SR)
-├── PuniTekstSr.swift    # SR full verse-by-verse text, [Int: [String]], 23 psalms
-└── PuniTekstEn.swift    # EN full text — Brenton's Septuagint, [Int: [String]], 23 psalms
+├── Kathismata.swift     # 20 kathisma groupings — [Kathisma(number:range:psalms:)]
+├── OpeningLinesSr.swift # SR opening lines, [Int: String], all 150
+├── OpeningLinesEn.swift # EN opening lines, [Int: String], all 150 (still KJV-remapped, see Open work)
+├── NotesSr.swift        # SR liturgical notes, [Int: String], ~30 entries
+├── NotesEn.swift        # EN liturgical notes, [Int: String], ~30 entries (parity with SR)
+├── FullTextSr.swift     # SR full verse-by-verse text, [Int: [String]], 23 psalms
+└── FullTextEn.swift     # EN full text — Brenton's Septuagint, [Int: [String]], 23 psalms
 ```
 
 These were generated mechanically from the JS source (via a Node script that imported the ES modules and dumped JSON, then a Python script that emitted Swift dictionary literals) rather than hand-typed, specifically to avoid transcription errors across ~1700 lines of Cyrillic/English verse text. If you need to regenerate them (e.g. after adding more psalms to the web-side data first), the same approach is the fastest safe path — do not hand-retype verse text.
 
-Each `PuniTekst*.swift` is `[Int: [String]]`: one verse per array entry, position = verse number − 1, no inscription (same convention as the web app — see "Decision history" below).
+Each `FullText*.swift` is `[Int: [String]]`: one verse per array entry, position = verse number − 1, no inscription (same convention as the web app — see "Decision history" below).
 
 ### Views (`ios/App/App/Views/`)
 
@@ -41,12 +43,12 @@ Each `PuniTekst*.swift` is `[Int: [String]]`: one verse per array entry, positio
 OrnamentView.swift        # decorative diamond ornament, drawn with Canvas/Path (ports the inline SVG)
 DividerView.swift         # horizontal divider with center ornament
 PsalmListItemView.swift   # single row in the list view
-PsalmListView.swift       # search + katizma filter + scrollable list + header/footer + language toggle
+PsalmListView.swift       # search + kathisma filter + scrollable list + header/footer + language toggle
 PsalmReaderView.swift     # full-text reader with drop cap, font controls, prev/next navigation
 ContentView.swift         # root view, holds `selected` and `fontSize`
 ```
 
-`PsalmListView` builds its `allPsalms` array fresh from `lang.pocetak`/`lang.puniTekst` (computed property, not cached) — same "always fresh" behavior as the React version's `useMemo`. `PsalmReaderView` falls back to a "not yet available" panel when `lang.puniTekst[broj]` is nil.
+`PsalmListView` builds its `allPsalms` array fresh from `lang.openingLines`/`lang.fullText` (computed property, not cached) — same "always fresh" behavior as the React version's `useMemo`. `PsalmReaderView` falls back to a "not yet available" panel when `lang.fullText[number]` is nil.
 
 `Theme.swift` (`ios/App/App/Extensions/`) holds hardcoded Color constants approximating the web app's Tailwind amber/stone/red palette, plus `Theme.display()`/`Theme.serif()` font helpers. **Those font helpers currently return system serif-design fonts, not the actual Cormorant Garamond / EB Garamond faces** the web app used — see Open work below.
 
@@ -90,7 +92,7 @@ Both translations use **LXX/Orthodox numbering**:
 
 If you ever need to reference a KJV Bible, this matters. Brenton handles it natively; KJV does not.
 
-Inscriptions ("A Psalm of David…") are **not numbered** in the data files. Brenton numbers them as verses 1 (or 1–2) in the source; the fetcher script strips them so the body starts at array index 0 = verse 1 in display. This convention carries over unchanged into the native `PuniTekst*.swift` files.
+Inscriptions ("A Psalm of David…") are **not numbered** in the data files. Brenton numbers them as verses 1 (or 1–2) in the source; the fetcher script strips them so the body starts at array index 0 = verse 1 in display. This convention carries over unchanged into the native `FullText*.swift` files.
 
 ### Tooling: Brenton fetcher
 
@@ -100,7 +102,7 @@ Inscriptions ("A Psalm of David…") are **not numbered** in the data files. Bre
 - Footnote anchors (`<a class="notemark">`) have nested `<span class="popup">` tooltip text that must be skipped along with the asterisk marker.
 - Italicized translator additions (`<span class='add'>`) and small-caps spans are unwrapped (text kept, markup dropped).
 
-To re-run for additional psalms, edit the `PSALMS` list at the top of the script and re-run. The output is a JS module that drops into `src/data/en/puniTekst.js` — and, since the native data files are generated from the JS source (see above), should be re-transcribed into `PuniTekstEn.swift` afterward.
+To re-run for additional psalms, edit the `PSALMS` list at the top of the script and re-run. The output is a JS module that drops into `src/data/en/puniTekst.js` — and, since the native data files are generated from the JS source (see above), should be re-transcribed into `FullTextEn.swift` afterward.
 
 ## Open work
 
@@ -111,12 +113,12 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 
 ### Highest-priority remaining work
 
-1. **Open `ios/App/App.xcodeproj` in real Xcode and run it on a simulator.** The code is known to compile (see the Build row), so what's left to confirm is runtime behaviour and layout — the drop cap, the katizma chips, the font clamp, the SR/EN toggle — not whether it builds.
+1. **Open `ios/App/App.xcodeproj` in real Xcode and run it on a simulator.** The code is known to compile (see the Build row), so what's left to confirm is runtime behaviour and layout — the drop cap, the kathisma chips, the font clamp, the SR/EN toggle — not whether it builds.
 2. **Rename the Xcode target from `App` to `PrayerRules`** — do this *in Xcode* (select the target → Identity and Type → Name, and let Xcode's rename refactor update the scheme, product name, and paths), not by hand-editing the pbxproj. `App` is a leftover Capacitor-generated name; it was deliberately left alone during the prayer-rules rename because renaming a target blind, with no way to build and check, risks breaking the project for cosmetic gain. Xcode does it safely in seconds. The bundle identifier is already `rs.prayerrules.app`.
 3. **Delete the legacy web app** (`src/`, `android/`, `index.html`, `vite.config.js`, `tailwind.config.js`, `postcss.config.js`, `package.json`, `package-lock.json`, `capacitor.config.json`) once the native app is confirmed working, and update `README.md` accordingly.
 4. **Bundle the real Cormorant Garamond / EB Garamond fonts** and wire them up via `Info.plist`'s `UIAppFonts`, replacing the `Theme.display()`/`Theme.serif()` system-font stand-ins.
-5. **Fill in the remaining 127 psalms** in both languages (currently 23/150 have full text) — same source material as before (molitvenik.in.rs for SR, extending the Brenton fetcher for EN), transcribed into `PuniTekstSr.swift`/`PuniTekstEn.swift`. Pay attention at LXX 9, 113, 114, 115, 146, 147 — the LXX/MT split boundaries.
-6. **Regenerate `PocetakEn.swift`** from Brenton opening lines (currently KJV-remapped — safe but inconsistent with the Brenton attribution in the footer).
+5. **Fill in the remaining 127 psalms** in both languages (currently 23/150 have full text) — same source material as before (molitvenik.in.rs for SR, extending the Brenton fetcher for EN), transcribed into `FullTextSr.swift`/`FullTextEn.swift`. Pay attention at LXX 9, 113, 114, 115, 146, 147 — the LXX/MT split boundaries.
+6. **Regenerate `OpeningLinesEn.swift`** from Brenton opening lines (currently KJV-remapped — safe but inconsistent with the Brenton attribution in the footer).
 7. **iOS App Icon and Splash** — replace the Capacitor-era placeholders before any TestFlight/App Store submission. Needs design input.
 
 ### Secondary polish
@@ -128,7 +130,7 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 
 - Serbian display uses Cyrillic exclusively. Don't transliterate.
 - Brenton uses "Pause." where KJV uses "Selah." — keep as-is.
-- The reader's drop cap uses the first character of verse 1 (`stih.first`). If verse 1 starts with punctuation or a digit this will look wrong; verify when adding new psalms.
+- The reader's drop cap uses the first character of verse 1 (`verse.first`). If verse 1 starts with punctuation or a digit this will look wrong; verify when adding new psalms.
 - The font-size range is clamped `[14, 28]` in `PsalmReaderView.swift`. Don't add a slider without adjusting bounds in both call sites (the two buttons).
 - When you add a new UI string, add it to **both** `AppStrings.sr` and `AppStrings.en` in `Strings.swift` — there's no fallback.
 

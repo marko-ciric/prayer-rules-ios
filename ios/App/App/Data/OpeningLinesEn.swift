@@ -1,7 +1,7 @@
 import Foundation
 
 // EN opening lines (KJV-remapped to LXX numbering)
-let pocetakEn: [Int: String] = [
+let openingLinesEn: [Int: String] = [
     1: "Blessed is the man that walketh not in the counsel of the ungodly",
     2: "Why do the heathen rage, and the people imagine a vain thing?",
     3: "LORD, how are they increased that trouble me!",

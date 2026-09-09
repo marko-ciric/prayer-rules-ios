@@ -1,39 +1,39 @@
 import SwiftUI
 
 private struct PsalmSummary: Identifiable {
-    let broj: Int
+    let number: Int
     let opening: String
     let hasFull: Bool
-    var id: Int { broj }
+    var id: Int { number }
 }
 
-/// Search + katizma filter + scrollable list of all 150 psalms —
+/// Search + kathisma filter + scrollable list of all 150 psalms —
 /// ports PsalmList.jsx.
 struct PsalmListView: View {
     @EnvironmentObject var lang: LanguageManager
     let onSelect: (Int) -> Void
 
     @State private var search: String = ""
-    @State private var activeKatizma: Int? = nil
+    @State private var activeKathisma: Int? = nil
 
     private var allPsalms: [PsalmSummary] {
         (1...150).map { i in
-            PsalmSummary(broj: i, opening: lang.pocetak[i] ?? "", hasFull: lang.puniTekst[i] != nil)
+            PsalmSummary(number: i, opening: lang.openingLines[i] ?? "", hasFull: lang.fullText[i] != nil)
         }
     }
 
     private var filtered: [PsalmSummary] {
         var list = allPsalms
-        if let k = activeKatizma, let kat = katizme.first(where: { $0.broj == k }) {
-            list = list.filter { kat.psalmi.contains($0.broj) }
+        if let k = activeKathisma, let kat = kathismata.first(where: { $0.number == k }) {
+            list = list.filter { kat.psalms.contains($0.number) }
         }
         let q = search.trimmingCharacters(in: .whitespacesAndNewlines)
         if !q.isEmpty {
             let lowerQ = q.lowercased()
             list = list.filter {
                 $0.opening.lowercased().contains(lowerQ)
-                    || String($0.broj) == q
-                    || String($0.broj).hasPrefix(q)
+                    || String($0.number) == q
+                    || String($0.number).hasPrefix(q)
             }
         }
         return list
@@ -55,8 +55,8 @@ struct PsalmListView: View {
                 } else {
                     LazyVStack(spacing: 0) {
                         ForEach(filtered) { p in
-                            PsalmListItemView(broj: p.broj, opening: p.opening, hasFull: p.hasFull, t: t) {
-                                onSelect(p.broj)
+                            PsalmListItemView(number: p.number, opening: p.opening, hasFull: p.hasFull, t: t) {
+                                onSelect(p.number)
                             }
                         }
                     }
@@ -179,12 +179,12 @@ struct PsalmListView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 6) {
-                    katizmaChip(label: t.filterAll, isActive: activeKatizma == nil) {
-                        activeKatizma = nil
+                    kathismaChip(label: t.filterAll, isActive: activeKathisma == nil) {
+                        activeKathisma = nil
                     }
-                    ForEach(katizme, id: \.broj) { k in
-                        katizmaChip(label: "\(t.filterKatizma) \(k.broj)", isActive: activeKatizma == k.broj) {
-                            activeKatizma = (activeKatizma == k.broj) ? nil : k.broj
+                    ForEach(kathismata, id: \.number) { k in
+                        kathismaChip(label: "\(t.filterKathisma) \(k.number)", isActive: activeKathisma == k.number) {
+                            activeKathisma = (activeKathisma == k.number) ? nil : k.number
                         }
                     }
                 }
@@ -196,7 +196,7 @@ struct PsalmListView: View {
         .overlay(Rectangle().fill(Theme.amber900.opacity(0.15)).frame(height: 1), alignment: .bottom)
     }
 
-    private func katizmaChip(label: String, isActive: Bool, action: @escaping () -> Void) -> some View {
+    private func kathismaChip(label: String, isActive: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(label)
                 .font(Theme.serif(12))

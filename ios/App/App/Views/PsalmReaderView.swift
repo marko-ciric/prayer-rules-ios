@@ -4,15 +4,15 @@ import SwiftUI
 /// navigation — ports PsalmReader.jsx.
 struct PsalmReaderView: View {
     @EnvironmentObject var lang: LanguageManager
-    let broj: Int
+    let number: Int
     @Binding var fontSize: CGFloat
     let onBack: () -> Void
     let onNavigate: (Int) -> Void
 
     var body: some View {
         let t = lang.t
-        let stihovi = lang.puniTekst[broj]
-        let napomena = lang.napomene[broj]
+        let verses = lang.fullText[number]
+        let note = lang.notes[number]
 
         ScrollView {
             VStack(spacing: 0) {
@@ -25,15 +25,15 @@ struct PsalmReaderView: View {
                         .textCase(.uppercase)
                         .foregroundColor(Theme.amber900.opacity(0.7))
 
-                    Text("\(broj)")
+                    Text("\(number)")
                         .font(Theme.display(64, weight: .bold))
                         .foregroundColor(Theme.amber900)
                         .padding(.top, 4)
 
                     DividerView()
 
-                    if let napomena = napomena {
-                        Text(napomena)
+                    if let note = note {
+                        Text(note)
                             .font(Theme.serif(14))
                             .italic()
                             .foregroundColor(Theme.stone600)
@@ -42,8 +42,8 @@ struct PsalmReaderView: View {
                             .padding(.bottom, 24)
                     }
 
-                    if let stihovi = stihovi {
-                        fullText(stihovi)
+                    if let verses = verses {
+                        fullText(verses)
                     } else {
                         noFullText(t)
                     }
@@ -63,7 +63,7 @@ struct PsalmReaderView: View {
             }
         }
         .background(Theme.parchment.ignoresSafeArea())
-        .id(broj) // reset scroll position when navigating between psalms
+        .id(number) // reset scroll position when navigating between psalms
     }
 
     @ViewBuilder
@@ -99,16 +99,16 @@ struct PsalmReaderView: View {
     }
 
     @ViewBuilder
-    private func fullText(_ stihovi: [String]) -> some View {
+    private func fullText(_ verses: [String]) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            ForEach(Array(stihovi.enumerated()), id: \.offset) { i, stih in
+            ForEach(Array(verses.enumerated()), id: \.offset) { i, verse in
                 HStack(alignment: .top, spacing: 12) {
                     Text("\(i + 1)")
                         .font(Theme.display(13, weight: .semibold))
                         .foregroundColor(Theme.amber900.opacity(0.7))
                         .frame(width: 20, alignment: .trailing)
 
-                    if i == 0, let first = stih.first {
+                    if i == 0, let first = verse.first {
                         // Approximates the web reader's CSS-floated drop cap:
                         // the first character rendered large beside the rest
                         // of the verse (not a true text-wrap float).
@@ -116,13 +116,13 @@ struct PsalmReaderView: View {
                             Text(String(first))
                                 .font(Theme.display(44, weight: .bold))
                                 .foregroundColor(Theme.red900)
-                            Text(String(stih.dropFirst()))
+                            Text(String(verse.dropFirst()))
                                 .font(.system(size: fontSize, design: .serif))
                                 .foregroundColor(Theme.stone800)
                                 .lineSpacing(fontSize * 0.4)
                         }
                     } else {
-                        Text(stih)
+                        Text(verse)
                             .font(.system(size: fontSize, design: .serif))
                             .foregroundColor(Theme.stone800)
                             .lineSpacing(fontSize * 0.4)
@@ -136,7 +136,7 @@ struct PsalmReaderView: View {
     @ViewBuilder
     private func noFullText(_ t: AppStrings) -> some View {
         VStack(spacing: 0) {
-            Text("\(t.openQuote)\(lang.pocetak[broj] ?? "")…\"")
+            Text("\(t.openQuote)\(lang.openingLines[number] ?? "")…\"")
                 .font(.system(size: fontSize, design: .serif))
                 .italic()
                 .foregroundColor(Theme.stone700)
@@ -162,16 +162,16 @@ struct PsalmReaderView: View {
     @ViewBuilder
     private func navigation(_ t: AppStrings) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            if broj > 1 {
-                navButton(label: "← \(t.psalm) \(broj - 1)", opening: lang.pocetak[broj - 1] ?? "", isLeading: true) {
-                    onNavigate(broj - 1)
+            if number > 1 {
+                navButton(label: "← \(t.psalm) \(number - 1)", opening: lang.openingLines[number - 1] ?? "", isLeading: true) {
+                    onNavigate(number - 1)
                 }
             } else {
                 Spacer()
             }
-            if broj < 150 {
-                navButton(label: "\(t.psalm) \(broj + 1) →", opening: lang.pocetak[broj + 1] ?? "", isLeading: false) {
-                    onNavigate(broj + 1)
+            if number < 150 {
+                navButton(label: "\(t.psalm) \(number + 1) →", opening: lang.openingLines[number + 1] ?? "", isLeading: false) {
+                    onNavigate(number + 1)
                 }
             } else {
                 Spacer()

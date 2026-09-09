@@ -1,7 +1,7 @@
 import Foundation
 
 // SR full verse-by-verse text (23 psalms)
-let puniTekstSr: [Int: [String]] = [
+let fullTextSr: [Int: [String]] = [
     1: [
         "Блажен човек који не иде на веће безбожника, и на пут грешника не стаде, и на седалиште погубника не седе.",
         "Него је у закону Господњем воља његова, и у закону Његовом поучава се дан и ноћ.",

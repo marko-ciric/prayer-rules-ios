@@ -10,9 +10,9 @@ struct ContentView: View {
 
     var body: some View {
         Group {
-            if let broj = selected {
+            if let number = selected {
                 PsalmReaderView(
-                    broj: broj,
+                    number: number,
                     fontSize: $fontSize,
                     onBack: { selected = nil },
                     onNavigate: { selected = $0 }

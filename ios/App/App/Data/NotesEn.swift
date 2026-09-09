@@ -1,7 +1,7 @@
 import Foundation
 
 // EN liturgical notes, parity with SR (30 entries)
-let napomeneEn: [Int: String] = [
+let notesEn: [Int: String] = [
     1: "A Psalm of David. The opening psalm of the Psalter.",
     2: "A Psalm of David. A prophecy concerning Christ.",
     3: "A Psalm of David, when he fled from Absalom his son.",

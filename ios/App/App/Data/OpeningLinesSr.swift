@@ -1,7 +1,7 @@
 import Foundation
 
 // SR opening lines for all 150 psalms — Atanasije Jevtić translation
-let pocetakSr: [Int: String] = [
+let openingLinesSr: [Int: String] = [
     1: "Блажен човек који не иде на веће безбожника",
     2: "Зашто се узбунише народи и племена смислише залудне ствари",
     3: "Господе, што се умножише они који ме угњетавају",

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A single row in the list view — ports PsalmListItem.jsx.
 struct PsalmListItemView: View {
-    let broj: Int
+    let number: Int
     let opening: String
     let hasFull: Bool
     let t: AppStrings
@@ -11,7 +11,7 @@ struct PsalmListItemView: View {
     var body: some View {
         Button(action: onTap) {
             HStack(alignment: .firstTextBaseline, spacing: 16) {
-                Text("\(broj)")
+                Text("\(number)")
                     .font(Theme.display(26, weight: .semibold))
                     .foregroundColor(Theme.amber900)
                     .frame(width: 48, alignment: .trailing)
