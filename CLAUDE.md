@@ -26,7 +26,7 @@ Mirrors the old `src/data/` structure, transcribed 1:1 (verse text and verse cou
 ios/App/App/Data/
 ├── Kathismata.swift     # 20 kathisma groupings — [Kathisma(number:range:psalms:)]
 ├── OpeningLinesSr.swift # SR opening lines, [Int: String], all 150
-├── OpeningLinesEn.swift # EN opening lines, [Int: String], all 150 (still KJV-remapped, see Open work)
+├── OpeningLinesEn.swift # EN opening lines, [Int: String], all 150 — Brenton, LXX-native
 ├── NotesSr.swift        # SR liturgical notes, [Int: String], ~30 entries
 ├── NotesEn.swift        # EN liturgical notes, [Int: String], ~30 entries (parity with SR)
 ├── FullTextSr.swift     # SR full verse-by-verse text, [Int: [String]], 23 psalms
@@ -118,8 +118,7 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 3. **Delete the legacy web app** (`src/`, `android/`, `index.html`, `vite.config.js`, `tailwind.config.js`, `postcss.config.js`, `package.json`, `package-lock.json`, `capacitor.config.json`) once the native app is confirmed working, and update `README.md` accordingly.
 4. **Bundle the real Cormorant Garamond / EB Garamond fonts** and wire them up via `Info.plist`'s `UIAppFonts`, replacing the `Theme.display()`/`Theme.serif()` system-font stand-ins.
 5. **Fill in the remaining 127 psalms** in both languages (currently 23/150 have full text) — same source material as before (molitvenik.in.rs for SR, extending the Brenton fetcher for EN), transcribed into `FullTextSr.swift`/`FullTextEn.swift`. Pay attention at LXX 9, 113, 114, 115, 146, 147 — the LXX/MT split boundaries.
-6. **Regenerate `OpeningLinesEn.swift`** from Brenton opening lines (currently KJV-remapped — safe but inconsistent with the Brenton attribution in the footer).
-7. **iOS App Icon and Splash** — replace the Capacitor-era placeholders before any TestFlight/App Store submission. Needs design input.
+6. **iOS App Icon and Splash** — replace the Capacitor-era placeholders before any TestFlight/App Store submission. Needs design input.
 
 ### Secondary polish
 - **Code scanning runs via GitHub's CodeQL default setup**, configured in repo settings rather than in-repo. There is deliberately no `.github/workflows/codeql.yml`: an advanced-config workflow cannot upload results while default setup is enabled, so the one inherited from `Psalter-Serbian-` was removed. Don't re-add a CodeQL *workflow* without first switching the repo from default to advanced setup — note that `build.yml` is a plain build lane, not a CodeQL config, so it does not conflict. Adding it also gives default setup's `actions` language something to analyse; that scan had been failing with "CodeQL could not process any code written in GitHub Actions" from the moment the repo had no workflow files at all.
@@ -136,6 +135,7 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 
 ## Decision history
 
+- **2026-09**: Regenerated `OpeningLinesEn.swift` from Brenton instead of KJV. The full text and the in-app footer had said Brenton since the 2026-06 switch, but the opening lines shown in the list view were still KJV manually remapped onto LXX numbers — so the app credited one translation and displayed another, and the remap was exactly the thing the 2026-06 entry calls unfixable at the split boundaries. Verified by checking that, for all 23 psalms whose Brenton full text is already committed, each new opening line is an exact prefix of that text's verse 1 (23/23). Inscriptions stay excluded, matching `FullTextEn.swift`.
 - **2026-09**: Removed the inherited CodeQL workflow. Making `prayer-rules-ios` public auto-enabled code scanning **default setup**, and GitHub refuses SARIF from an advanced-config workflow while default setup owns scanning, so `.github/workflows/codeql.yml` failed on every run. Default setup covers Swift, so deleting the workflow lost no coverage. Its `javascript-typescript` half targeted the legacy web app that is slated for deletion anyway.
 - **2026-09**: Project moved to its own repository, `marko-ciric/prayer-rules-ios`, and renamed to **prayer-rules** at the project level only — `PsaltirApp` → `PrayerRulesApp`, bundle id `rs.psalter.app` → `rs.prayerrules.app`, docs retitled. The user-facing app name stayed **Псалтир/Psalter** deliberately: the content is the Psalter, so the displayed title is accurate; the broader "prayer rules" name anticipates future scope (morning/evening prayers, canons) rather than describing what ships today. The original `Psalter-Serbian-` repo still holds the pre-move history. Not a GitHub fork — forks can't target the same owner — but a new repo carrying the full history, merged with its own initial commit (MIT LICENSE + Xcode `.gitignore`).
 - **2026-09**: Converted from React/Vite/Capacitor web app (wrapped for iOS + Android) to a native SwiftUI, iPhone-only app. Reason: user requested Xcode/iPhone-only distribution with no web/WebView layer. The web app and Android wrapper are kept temporarily for reference and will be deleted once the native app builds successfully.
