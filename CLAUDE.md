@@ -6,7 +6,7 @@ The 150 Psalms of David in **Serbian (Cyrillic)** and **English**, for Orthodox 
 
 **Identifiers are English-only.** Type, property, function and file names use English (`Kathisma`, `number`, `range`, `psalms`, `openingLines`, `notes`, `fullText`, `verse`). Serbian and Church Slavonic appear **only inside string literals** — the psalm text and the `AppStrings.sr` UI copy. Don't reintroduce Serbian identifiers, and equally don't "translate" content strings: the Serbian text is Cyrillic and stays exactly as it is.
 
-**This repo is mid-conversion.** The app used to be a React/Vite/Capacitor web app wrapped for iOS. It is being converted to a **native SwiftUI, iPhone-only app** (no Capacitor, no WebView, no Android). The native app lives under `ios/App/App/` and is now the primary target — read that section first. The original web app under `src/`, `android/`, and the root Vite/Capacitor config files (`index.html`, `vite.config.js`, `tailwind.config.js`, `postcss.config.js`, `package.json`, `capacitor.config.json`) are **kept only as a reference/parity check** during the transition and are slated for deletion once the native app has been reviewed and built successfully in Xcode — don't add new features to them.
+**This is a native SwiftUI, iPhone-only app** — no Capacitor, no WebView, no Android, no third-party dependencies. Everything ships from `ios/App/App/`. It began as a React/Vite/Capacitor web app; that tree was removed once the native app was merged and building, so any reference you find to `src/`, `android/`, Vite or Capacitor is describing history, not the current repo. The pre-conversion code remains in git history and in the original `marko-ciric/Psalter-Serbian-` repository.
 
 ## Native iOS app (`ios/App/App/`)
 
@@ -20,7 +20,7 @@ The 150 Psalms of David in **Serbian (Cyrillic)** and **English**, for Orthodox 
 
 ### Data model
 
-Mirrors the old `src/data/` structure, transcribed 1:1 (verse text and verse counts are unchanged) into Swift under `ios/App/App/Data/`:
+Psalm content lives in plain Swift dictionaries under `ios/App/App/Data/`:
 
 ```
 ios/App/App/Data/
@@ -33,9 +33,9 @@ ios/App/App/Data/
 └── FullTextEn.swift     # EN full text — Brenton's Septuagint, [Int: [String]], 23 psalms
 ```
 
-These were generated mechanically from the JS source (via a Node script that imported the ES modules and dumped JSON, then a Python script that emitted Swift dictionary literals) rather than hand-typed, specifically to avoid transcription errors across ~1700 lines of Cyrillic/English verse text. If you need to regenerate them (e.g. after adding more psalms to the web-side data first), the same approach is the fastest safe path — do not hand-retype verse text.
+These were generated mechanically rather than hand-typed, to avoid transcription errors across ~1700 lines of Cyrillic and English verse. Keep that discipline: script any future additions and verify them against the source (for the English side, cross-check each opening line against verse 1 of the corresponding full text). **Do not hand-retype verse text.**
 
-Each `FullText*.swift` is `[Int: [String]]`: one verse per array entry, position = verse number − 1, no inscription (same convention as the web app — see "Decision history" below).
+Each `FullText*.swift` is `[Int: [String]]`: one verse per array entry, position = verse number − 1, no inscription (see "Decision history" below).
 
 ### Views (`ios/App/App/Views/`)
 
@@ -48,30 +48,20 @@ PsalmReaderView.swift     # full-text reader with drop cap, font controls, prev/
 ContentView.swift         # root view, holds `selected` and `fontSize`
 ```
 
-`PsalmListView` builds its `allPsalms` array fresh from `lang.openingLines`/`lang.fullText` (computed property, not cached) — same "always fresh" behavior as the React version's `useMemo`. `PsalmReaderView` falls back to a "not yet available" panel when `lang.fullText[number]` is nil.
+`PsalmListView` builds its `allPsalms` array fresh from `lang.openingLines`/`lang.fullText` (computed property, not cached) — recomputed on each access. `PsalmReaderView` falls back to a "not yet available" panel when `lang.fullText[number]` is nil.
 
 `Theme.swift` (`ios/App/App/Extensions/`) holds hardcoded Color constants approximating the web app's Tailwind amber/stone/red palette, plus `Theme.display()`/`Theme.serif()` font helpers. **Those font helpers currently return system serif-design fonts, not the actual Cormorant Garamond / EB Garamond faces** the web app used — see Open work below.
 
-### Known simplifications vs. the web app
+### Known simplifications
 
 - **Fonts**: using `.system(design: .serif)` instead of the real Cormorant Garamond (display) / EB Garamond (body) faces. The web app loaded these from Google Fonts; the native app needs the actual `.ttf`/`.otf` files bundled and registered via `Info.plist`'s `UIAppFonts` key. Not done yet.
 - **Drop cap**: the web reader used a CSS float so body text wrapped around the oversized first letter. SwiftUI has no direct equivalent, so `PsalmReaderView` renders the drop cap and the rest of verse 1 side-by-side in an `HStack` instead — visually close but not a true wrap.
 - **App Icon / Splash**: still the original Capacitor default placeholders (blue ✕ on grid), untouched by this conversion. Must be replaced before any TestFlight/App Store submission.
-- **No router**: same as the web app — `selected` is transient `@State`, so backgrounding/relaunching the app returns to the list. That's intentional, matching the original no-router decision.
+- **No router**: `selected` is transient `@State`, so backgrounding/relaunching the app returns to the list. That's intentional, matching the original no-router decision.
 
-## Legacy web app (`src/`, `android/`) — reference only, pending deletion
+## The psalm texts
 
-The original React 18 + Vite + Tailwind + Capacitor app. Kept temporarily so the native rewrite can be checked against it line-by-line; do not extend it. Its own historical documentation:
-
-| | |
-|---|---|
-| Stack | React 18, Vite 5, Tailwind 3, lucide-react. No router. No tests. |
-| Entry point | `src/main.jsx` → `<App />` (`src/App.jsx`) |
-| i18n | `src/i18n/LanguageContext.jsx`, same `T` object the native `AppStrings.swift` was transcribed from. |
-| Data | `src/data/*.js` + `src/data/en/*.js` — the source the native `Data/*.swift` files were generated from. |
-| Components | `src/components/*.jsx` — the source the native `Views/*.swift` files were ported from. |
-
-### The two translations and the LXX vs MT numbering question
+### The two translations, and LXX vs MT numbering
 
 **Serbian** is Bishop Atanasije (Jevtić)'s translation from Church Slavonic and Greek (Septuagint). Sourced from molitvenik.in.rs.
 
@@ -102,23 +92,28 @@ Inscriptions ("A Psalm of David…") are **not numbered** in the data files. Bre
 - Footnote anchors (`<a class="notemark">`) have nested `<span class="popup">` tooltip text that must be skipped along with the asterisk marker.
 - Italicized translator additions (`<span class='add'>`) and small-caps spans are unwrapped (text kept, markup dropped).
 
-To re-run for additional psalms, edit the `PSALMS` list at the top of the script and re-run. The output is a JS module that drops into `src/data/en/puniTekst.js` — and, since the native data files are generated from the JS source (see above), should be re-transcribed into `FullTextEn.swift` afterward.
+To re-run for additional psalms, edit the `PSALMS` list at the top of the script and re-run. It used to emit a JS module for the old web tree; with that gone, have it emit Swift dictionary literals straight into `FullTextEn.swift`.
 
 ## Open work
 
-### Done in the most recent session
-- **Converted the app to native SwiftUI, iPhone-only** (see top of this file). Added `ios/App/App/{PrayerRulesApp,Views,Models,Data,Extensions}` with a full port of the list view, reader, i18n, and all psalm data (150 opening lines × 2 languages, 23 full-text psalms × 2 languages, 30 liturgical notes × 2 languages, 20 katizme). Removed the Capacitor/WebView plumbing from the `ios/App` Xcode project (AppDelegate, Main.storyboard, the `CapApp-SPM` Swift package dependency) and restricted the target to iPhone only.
-- Left `src/`, `android/`, and the root Vite/Capacitor config files in place as a reference during the transition (see "Legacy web app" above) — **delete these once the native app has been opened and built successfully in Xcode.**
-- Previously (prior session): switched English full text from KJV to **Brenton's English Septuagint** for the 23 existing psalms (1–8, 46, 50, 85, 89, 90, 101–103, 134, 136, 140, 142, 148–150).
+### Done recently
+- **Converted the app to native SwiftUI, iPhone-only.** Full port of the list view, reader and i18n, plus all psalm data (150 opening lines x 2 languages, 23 full-text psalms x 2 languages, 30 liturgical notes x 2 languages, 20 kathismata). Removed the Capacitor/WebView plumbing from the Xcode project and restricted the target to iPhone.
+- **Added `xcodebuild` build CI** (see Secondary polish), so build regressions surface directly rather than being inferred from CodeQL's autobuild.
+- **Regenerated `OpeningLinesEn.swift` from Brenton** instead of KJV. The full text and footer had credited Brenton since the translation switch while the list view still showed KJV openings remapped onto LXX numbers -- the app credited one translation and displayed another. Verified by checking that each new opening line is an exact prefix of verse 1 of the committed full text (23/23).
+- **Renamed all Serbian identifiers to English** (`Kathisma`, `number`, `openingLines`, `fullText`, ...). Verified content-safe: all 1032 quoted strings byte-identical across the rename.
+- **Deleted the legacy web app** -- `src/`, `android/` and the Vite/Capacitor config files, 76 files and ~6.5k lines. It existed only as a parity reference for the port; that use is spent.
+- **Corrected the README licence wording**, which had described the psalm text as "a translation of public-domain scripture" -- see Decision history.
 
 ### Highest-priority remaining work
 
 1. **Open `ios/App/App.xcodeproj` in real Xcode and run it on a simulator.** The code is known to compile (see the Build row), so what's left to confirm is runtime behaviour and layout — the drop cap, the kathisma chips, the font clamp, the SR/EN toggle — not whether it builds.
 2. **Rename the Xcode target from `App` to `PrayerRules`** — do this *in Xcode* (select the target → Identity and Type → Name, and let Xcode's rename refactor update the scheme, product name, and paths), not by hand-editing the pbxproj. `App` is a leftover Capacitor-generated name; it was deliberately left alone during the prayer-rules rename because renaming a target blind, with no way to build and check, risks breaking the project for cosmetic gain. Xcode does it safely in seconds. The bundle identifier is already `rs.prayerrules.app`.
-3. **Delete the legacy web app** (`src/`, `android/`, `index.html`, `vite.config.js`, `tailwind.config.js`, `postcss.config.js`, `package.json`, `package-lock.json`, `capacitor.config.json`) once the native app is confirmed working, and update `README.md` accordingly.
-4. **Bundle the real Cormorant Garamond / EB Garamond fonts** and wire them up via `Info.plist`'s `UIAppFonts`, replacing the `Theme.display()`/`Theme.serif()` system-font stand-ins.
-5. **Fill in the remaining 127 psalms** in both languages (currently 23/150 have full text) — same source material as before (molitvenik.in.rs for SR, extending the Brenton fetcher for EN), transcribed into `FullTextSr.swift`/`FullTextEn.swift`. Pay attention at LXX 9, 113, 114, 115, 146, 147 — the LXX/MT split boundaries.
-6. **iOS App Icon and Splash** — replace the Capacitor-era placeholders before any TestFlight/App Store submission. Needs design input.
+3. **Bundle the real Cormorant Garamond / EB Garamond fonts** and wire them up via `Info.plist`'s `UIAppFonts`, replacing the `Theme.display()`/`Theme.serif()` system-font stand-ins.
+4. **Fill in the remaining 127 psalms** (currently 23/150 have full text). The two languages are blocked on different things, and neither is a coding problem:
+   - **English** is unblocked — extend the Brenton fetcher to all 150 and emit into `FullTextEn.swift`. Watch LXX 9, 113, 114, 115, 146, 147, the LXX/MT split boundaries.
+   - **Serbian** is blocked on **permission**, not availability: the Jevtić translation is most likely under copyright until ~2091 (see Decision history). Adding the remaining 127 would put the complete translated Psalter in a public repo. Get a licence from the estate or publisher first.
+   - **Church Slavonic** was explored as a public-domain alternative. Encoding is *solved* — molitvenik.in.rs's psalter PDF is in the legacy UCS codepage, and the `cslavonic` Python package (MIT, from the Slavonic Computing Initiative) decodes it completely: 54 ASCII stand-ins plus 13 further characters, zero residual, genuine punctuation preserved. It is blocked on **structure**: neither that PDF nor the Initiative's `AugmentedPsalter.txt` (native Unicode) delimits all 150 psalms — 80 and 95 psalm markers respectively — and neither marks verse divisions at all. Both are continuous-reading liturgical editions. Do not infer the missing boundaries; get a per-psalm edition. azbyka.ru appears to have one but returns 403 to scripted requests.
+5. **iOS App Icon and Splash** — replace the Capacitor-era placeholders before any TestFlight/App Store submission. Needs design input.
 
 ### Secondary polish
 - **Code scanning runs via GitHub's CodeQL default setup**, configured in repo settings rather than in-repo. There is deliberately no `.github/workflows/codeql.yml`: an advanced-config workflow cannot upload results while default setup is enabled, so the one inherited from `Psalter-Serbian-` was removed. Don't re-add a CodeQL *workflow* without first switching the repo from default to advanced setup — note that `build.yml` is a plain build lane, not a CodeQL config, so it does not conflict. Adding it also gives default setup's `actions` language something to analyse; that scan had been failing with "CodeQL could not process any code written in GitHub Actions" from the moment the repo had no workflow files at all.
@@ -136,6 +131,8 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 ## Decision history
 
 - **2026-09**: Regenerated `OpeningLinesEn.swift` from Brenton instead of KJV. The full text and the in-app footer had said Brenton since the 2026-06 switch, but the opening lines shown in the list view were still KJV manually remapped onto LXX numbers — so the app credited one translation and displayed another, and the remap was exactly the thing the 2026-06 entry calls unfixable at the split boundaries. Verified by checking that, for all 23 psalms whose Brenton full text is already committed, each new opening line is an exact prefix of that text's verse 1 (23/23). Inscriptions stay excluded, matching `FullTextEn.swift`.
+- **2026-09**: Deleted the legacy web app (`src/`, `android/`, and the Vite/Capacitor config files) — 76 files, ~6.5k lines. It had been kept only as a parity reference for the native port; with the port merged, building in CI and its data verified, the reference had no remaining use and its presence made the repo look like a live web project. The history is preserved in git and in the original `Psalter-Serbian-` repository.
+- **2026-09**: Corrected the `README` licence wording, which claimed the psalm text was "a translation of public-domain scripture". That conflated two different things: the Psalms are public domain, but a translation is a separate copyrightable work. Brenton (d. 1862) is public domain; Bishop Atanasije (Jevtić) died in 2021, so the Serbian translation is most likely protected until roughly 2091 and is present without an explicit licence. Settle permission before distributing or expanding the Serbian text.
 - **2026-09**: Removed the inherited CodeQL workflow. Making `prayer-rules-ios` public auto-enabled code scanning **default setup**, and GitHub refuses SARIF from an advanced-config workflow while default setup owns scanning, so `.github/workflows/codeql.yml` failed on every run. Default setup covers Swift, so deleting the workflow lost no coverage. Its `javascript-typescript` half targeted the legacy web app that is slated for deletion anyway.
 - **2026-09**: Project moved to its own repository, `marko-ciric/prayer-rules-ios`, and renamed to **prayer-rules** at the project level only — `PsaltirApp` → `PrayerRulesApp`, bundle id `rs.psalter.app` → `rs.prayerrules.app`, docs retitled. The user-facing app name stayed **Псалтир/Psalter** deliberately: the content is the Psalter, so the displayed title is accurate; the broader "prayer rules" name anticipates future scope (morning/evening prayers, canons) rather than describing what ships today. The original `Psalter-Serbian-` repo still holds the pre-move history. Not a GitHub fork — forks can't target the same owner — but a new repo carrying the full history, merged with its own initial commit (MIT LICENSE + Xcode `.gitignore`).
 - **2026-09**: Converted from React/Vite/Capacitor web app (wrapped for iOS + Android) to a native SwiftUI, iPhone-only app. Reason: user requested Xcode/iPhone-only distribution with no web/WebView layer. The web app and Android wrapper are kept temporarily for reference and will be deleted once the native app builds successfully.

@@ -61,19 +61,7 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 
-# ---------------------------------------------------------------------------
-# Legacy web app (React/Vite + Capacitor) — kept temporarily for reference
-# ---------------------------------------------------------------------------
-node_modules/
-dist/
-
-# Capacitor iOS - Xcode derived data and build artifacts
-ios/App/Pods/
-ios/App/.build/
+# Xcode build artefacts
+ios/App/build/
 ios/App/DerivedData/
 ios/.xcode.env.local
-
-# Capacitor Android - Gradle build artifacts
-android/.gradle/
-android/app/build/
-android/build/
