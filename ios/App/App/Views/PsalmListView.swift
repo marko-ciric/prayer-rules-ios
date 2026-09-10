@@ -76,7 +76,7 @@ struct PsalmListView: View {
         VStack(spacing: 12) {
             HStack {
                 Spacer()
-                languageToggle
+                LanguageToggleView()
             }
             .padding(.trailing, 4)
 
@@ -131,27 +131,6 @@ struct PsalmListView: View {
         .frame(maxWidth: .infinity)
         .background(Theme.amber50.opacity(0.4))
         .overlay(Rectangle().fill(Theme.amber900.opacity(0.2)).frame(height: 1), alignment: .bottom)
-    }
-
-    private var languageToggle: some View {
-        HStack(spacing: 4) {
-            ForEach(Language.allCases, id: \.self) { l in
-                Button(action: { lang.language = l }) {
-                    Text(l.rawValue.uppercased())
-                        .font(Theme.serif(11))
-                        .kerning(1)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(lang.language == l ? Theme.amber900 : Color.white)
-                        .foregroundColor(lang.language == l ? Theme.amber50 : Theme.amber900)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 2)
-                                .stroke(lang.language == l ? Theme.amber900 : Theme.amber900.opacity(0.3), lineWidth: 1)
-                        )
-                        .cornerRadius(2)
-                }
-            }
-        }
     }
 
     @ViewBuilder

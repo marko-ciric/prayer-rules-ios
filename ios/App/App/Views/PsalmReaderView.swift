@@ -4,8 +4,8 @@ import SwiftUI
 /// navigation — ports PsalmReader.jsx.
 struct PsalmReaderView: View {
     @EnvironmentObject var lang: LanguageManager
+    @EnvironmentObject var settings: ReaderSettings
     let number: Int
-    @Binding var fontSize: CGFloat
     let onBack: () -> Void
     let onNavigate: (Int) -> Void
 
@@ -78,14 +78,14 @@ struct PsalmReaderView: View {
             }
             Spacer()
             HStack(spacing: 4) {
-                Button(action: { fontSize = max(14, fontSize - 2) }) {
+                Button(action: { settings.decrease() }) {
                     Image(systemName: "minus")
                         .foregroundColor(Theme.amber900)
                 }
                 .accessibilityLabel(t.smallerFont)
                 Image(systemName: "textformat.size")
                     .foregroundColor(Theme.amber900.opacity(0.6))
-                Button(action: { fontSize = min(28, fontSize + 2) }) {
+                Button(action: { settings.increase() }) {
                     Image(systemName: "plus")
                         .foregroundColor(Theme.amber900)
                 }
@@ -117,15 +117,15 @@ struct PsalmReaderView: View {
                                 .font(Theme.display(44, weight: .bold))
                                 .foregroundColor(Theme.red900)
                             Text(String(verse.dropFirst()))
-                                .font(.system(size: fontSize, design: .serif))
+                                .font(.system(size: settings.fontSize, design: .serif))
                                 .foregroundColor(Theme.stone800)
-                                .lineSpacing(fontSize * 0.4)
+                                .lineSpacing(settings.fontSize * 0.4)
                         }
                     } else {
                         Text(verse)
-                            .font(.system(size: fontSize, design: .serif))
+                            .font(.system(size: settings.fontSize, design: .serif))
                             .foregroundColor(Theme.stone800)
-                            .lineSpacing(fontSize * 0.4)
+                            .lineSpacing(settings.fontSize * 0.4)
                     }
                 }
             }
@@ -137,7 +137,7 @@ struct PsalmReaderView: View {
     private func noFullText(_ t: AppStrings) -> some View {
         VStack(spacing: 0) {
             Text("\(t.openQuote)\(lang.openingLines[number] ?? "")…\"")
-                .font(.system(size: fontSize, design: .serif))
+                .font(.system(size: settings.fontSize, design: .serif))
                 .italic()
                 .foregroundColor(Theme.stone700)
                 .multilineTextAlignment(.center)
