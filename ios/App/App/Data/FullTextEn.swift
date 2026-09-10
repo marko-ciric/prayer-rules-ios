@@ -1,7 +1,7 @@
 import Foundation
 
 // EN full text — Brenton's Septuagint (23 psalms)
-let puniTekstEn: [Int: [String]] = [
+let fullTextEn: [Int: [String]] = [
     1: [
         "Blessed is the man who has not walked in the counsel of the ungodly, and has not stood in the way of sinners, and has not sat in the seat of evil men.",
         "But his pleasure is in the law of the Lord; and in his law will he meditate day and night.",

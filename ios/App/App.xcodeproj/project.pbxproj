@@ -19,13 +19,13 @@
 		A100000F294800000000001A /* PsalmListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000E294800000000001A /* PsalmListItemView.swift */; };
 		A1000011294800000000001A /* PsalmListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000010294800000000001A /* PsalmListView.swift */; };
 		A1000013294800000000001A /* PsalmReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000012294800000000001A /* PsalmReaderView.swift */; };
-		A1000015294800000000001A /* Katizme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000014294800000000001A /* Katizme.swift */; };
-		A1000017294800000000001A /* PocetakSr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000016294800000000001A /* PocetakSr.swift */; };
-		A1000019294800000000001A /* PocetakEn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000018294800000000001A /* PocetakEn.swift */; };
-		A100001B294800000000001A /* NapomeneSr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001A294800000000001A /* NapomeneSr.swift */; };
-		A100001D294800000000001A /* NapomeneEn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001C294800000000001A /* NapomeneEn.swift */; };
-		A100001F294800000000001A /* PuniTekstSr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001E294800000000001A /* PuniTekstSr.swift */; };
-		A1000021294800000000001A /* PuniTekstEn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000020294800000000001A /* PuniTekstEn.swift */; };
+		A1000015294800000000001A /* Kathismata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000014294800000000001A /* Kathismata.swift */; };
+		A1000017294800000000001A /* OpeningLinesSr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000016294800000000001A /* OpeningLinesSr.swift */; };
+		A1000019294800000000001A /* OpeningLinesEn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000018294800000000001A /* OpeningLinesEn.swift */; };
+		A100001B294800000000001A /* NotesSr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001A294800000000001A /* NotesSr.swift */; };
+		A100001D294800000000001A /* NotesEn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001C294800000000001A /* NotesEn.swift */; };
+		A100001F294800000000001A /* FullTextSr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001E294800000000001A /* FullTextSr.swift */; };
+		A1000021294800000000001A /* FullTextEn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000020294800000000001A /* FullTextEn.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,13 +43,13 @@
 		A100000E294800000000001A /* PsalmListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PsalmListItemView.swift; sourceTree = "<group>"; };
 		A1000010294800000000001A /* PsalmListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PsalmListView.swift; sourceTree = "<group>"; };
 		A1000012294800000000001A /* PsalmReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PsalmReaderView.swift; sourceTree = "<group>"; };
-		A1000014294800000000001A /* Katizme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Katizme.swift; sourceTree = "<group>"; };
-		A1000016294800000000001A /* PocetakSr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocetakSr.swift; sourceTree = "<group>"; };
-		A1000018294800000000001A /* PocetakEn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocetakEn.swift; sourceTree = "<group>"; };
-		A100001A294800000000001A /* NapomeneSr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NapomeneSr.swift; sourceTree = "<group>"; };
-		A100001C294800000000001A /* NapomeneEn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NapomeneEn.swift; sourceTree = "<group>"; };
-		A100001E294800000000001A /* PuniTekstSr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuniTekstSr.swift; sourceTree = "<group>"; };
-		A1000020294800000000001A /* PuniTekstEn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuniTekstEn.swift; sourceTree = "<group>"; };
+		A1000014294800000000001A /* Kathismata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kathismata.swift; sourceTree = "<group>"; };
+		A1000016294800000000001A /* OpeningLinesSr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningLinesSr.swift; sourceTree = "<group>"; };
+		A1000018294800000000001A /* OpeningLinesEn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningLinesEn.swift; sourceTree = "<group>"; };
+		A100001A294800000000001A /* NotesSr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesSr.swift; sourceTree = "<group>"; };
+		A100001C294800000000001A /* NotesEn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesEn.swift; sourceTree = "<group>"; };
+		A100001E294800000000001A /* FullTextSr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullTextSr.swift; sourceTree = "<group>"; };
+		A1000020294800000000001A /* FullTextEn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullTextEn.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,13 +127,13 @@
 		A1000025294800000000001A /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				A1000014294800000000001A /* Katizme.swift */,
-				A1000016294800000000001A /* PocetakSr.swift */,
-				A1000018294800000000001A /* PocetakEn.swift */,
-				A100001A294800000000001A /* NapomeneSr.swift */,
-				A100001C294800000000001A /* NapomeneEn.swift */,
-				A100001E294800000000001A /* PuniTekstSr.swift */,
-				A1000020294800000000001A /* PuniTekstEn.swift */,
+				A1000014294800000000001A /* Kathismata.swift */,
+				A1000016294800000000001A /* OpeningLinesSr.swift */,
+				A1000018294800000000001A /* OpeningLinesEn.swift */,
+				A100001A294800000000001A /* NotesSr.swift */,
+				A100001C294800000000001A /* NotesEn.swift */,
+				A100001E294800000000001A /* FullTextSr.swift */,
+				A1000020294800000000001A /* FullTextEn.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -219,13 +219,13 @@
 				A100000F294800000000001A /* PsalmListItemView.swift in Sources */,
 				A1000011294800000000001A /* PsalmListView.swift in Sources */,
 				A1000013294800000000001A /* PsalmReaderView.swift in Sources */,
-				A1000015294800000000001A /* Katizme.swift in Sources */,
-				A1000017294800000000001A /* PocetakSr.swift in Sources */,
-				A1000019294800000000001A /* PocetakEn.swift in Sources */,
-				A100001B294800000000001A /* NapomeneSr.swift in Sources */,
-				A100001D294800000000001A /* NapomeneEn.swift in Sources */,
-				A100001F294800000000001A /* PuniTekstSr.swift in Sources */,
-				A1000021294800000000001A /* PuniTekstEn.swift in Sources */,
+				A1000015294800000000001A /* Kathismata.swift in Sources */,
+				A1000017294800000000001A /* OpeningLinesSr.swift in Sources */,
+				A1000019294800000000001A /* OpeningLinesEn.swift in Sources */,
+				A100001B294800000000001A /* NotesSr.swift in Sources */,
+				A100001D294800000000001A /* NotesEn.swift in Sources */,
+				A100001F294800000000001A /* FullTextSr.swift in Sources */,
+				A1000021294800000000001A /* FullTextEn.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

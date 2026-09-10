@@ -1,13 +1,13 @@
 import Foundation
 
 // EN opening lines for all 150 psalms — Brenton's English Septuagint
-// (1851, public domain), matching PuniTekstEn.swift and the in-app attribution.
+// (1851, public domain), matching FullTextEn.swift and the in-app attribution.
 // Numbering is LXX/Orthodox natively, so no KJV-style remapping is involved.
 //
 // Each entry is verse 1's body, truncated at a clause or sentence boundary.
-// Inscriptions are excluded, matching PuniTekstEn.swift. The UI appends an
+// Inscriptions are excluded, matching FullTextEn.swift. The UI appends an
 // ellipsis, so entries carry no trailing comma or period.
-let pocetakEn: [Int: String] = [
+let openingLinesEn: [Int: String] = [
     1: "Blessed is the man who has not walked in the counsel of the ungodly",
     2: "Wherefore did the heathen rage, and the nations imagine vain things?",
     3: "O Lord, why are they that afflict me multiplied? many rise up against me",

@@ -1,7 +1,7 @@
 import Foundation
 
 // SR liturgical notes for ~30 important psalms
-let napomeneSr: [Int: String] = [
+let notesSr: [Int: String] = [
     1: "Псалам Давидов. Уводни псалам Псалтира.",
     2: "Псалам Давидов. Пророштво о Христу.",
     3: "Псалам Давидов, када побеже испред лица Авесалома.",

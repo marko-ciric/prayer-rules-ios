@@ -12,7 +12,7 @@ struct AppStrings {
     let searchPlaceholder: String
     let noResults: String
     let filterAll: String
-    let filterKatizma: String
+    let filterKathisma: String
     let footerLine1: String
     let footerLine2: String
     let footerLine3: String
@@ -37,7 +37,7 @@ struct AppStrings {
         searchPlaceholder: "Претражи псалме (нпр. „помилуј\" или 50)",
         noResults: "Нема резултата за",
         filterAll: "Сви",
-        filterKatizma: "Катизма",
+        filterKathisma: "Катизма",
         footerLine1: "Превод: Епископ Атанасије (Јевтић)",
         footerLine2: "Са црквено-словенског и грчког (према Седамдесеторици).",
         footerLine3: "Извор: молитвеник.in.rs",
@@ -63,7 +63,7 @@ struct AppStrings {
         searchPlaceholder: "Search psalms (e.g., \"have mercy\" or 50)",
         noResults: "No results for",
         filterAll: "All",
-        filterKatizma: "Kathisma",
+        filterKathisma: "Kathisma",
         footerLine1: "Translation: Brenton's English Septuagint (1851)",
         footerLine2: "From the Greek (Septuagint), matching the Orthodox numbering.",
         footerLine3: "Public domain",

@@ -27,15 +27,15 @@ final class LanguageManager: ObservableObject {
         language == .en ? .en : .sr
     }
 
-    var pocetak: [Int: String] {
-        language == .en ? pocetakEn : pocetakSr
+    var openingLines: [Int: String] {
+        language == .en ? openingLinesEn : openingLinesSr
     }
 
-    var napomene: [Int: String] {
-        language == .en ? napomeneEn : napomeneSr
+    var notes: [Int: String] {
+        language == .en ? notesEn : notesSr
     }
 
-    var puniTekst: [Int: [String]] {
-        language == .en ? puniTekstEn : puniTekstSr
+    var fullText: [Int: [String]] {
+        language == .en ? fullTextEn : fullTextSr
     }
 }
