@@ -96,7 +96,7 @@ struct LiturgicalDayView: View {
 
     @ViewBuilder
     private func commemorations(_ language: Language) -> some View {
-        card(title: CalendarStrings.commemorations(language)) {
+        card(title: CalendarStrings.commemorations.text(language)) {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(day.feasts) { feast in
                     HStack(alignment: .top, spacing: 10) {
@@ -127,7 +127,7 @@ struct LiturgicalDayView: View {
 
     @ViewBuilder
     private func serviceOfDay(_ language: Language) -> some View {
-        card(title: CalendarStrings.serviceOfDay(language)) {
+        card(title: CalendarStrings.serviceOfDay.text(language)) {
             if let service = DailyServices.service(for: day) {
                 serviceRow(service, language)
             } else if case let propers = DailyServices.propers(for: day), !propers.isEmpty {
@@ -172,7 +172,7 @@ struct LiturgicalDayView: View {
 
     @ViewBuilder
     private func psalterOfDay(_ language: Language) -> some View {
-        card(title: CalendarStrings.psalterOfDay(language)) {
+        card(title: CalendarStrings.psalterOfDay.text(language)) {
             if let reading = day.kathismata {
                 VStack(alignment: .leading, spacing: 14) {
                     if !reading.matins.isEmpty {

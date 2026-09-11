@@ -159,7 +159,7 @@ struct CalendarMonthView: View {
     @ViewBuilder
     private func legend(_ language: Language) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(CalendarStrings.legend(language))
+            Text(CalendarStrings.legend.text(language))
                 .font(Theme.serif(10))
                 .kerning(2)
                 .textCase(.uppercase)

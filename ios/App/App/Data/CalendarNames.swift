@@ -82,7 +82,7 @@ enum CalendarNames {
             : "\(d.day). \(month) \(d.year)."
     }
 
-    /// "28. август" / "28 August" — the church date, without the year, which
+    /// "28. августа" / "28 August" — the church date, without the year, which
     /// is how it is printed beside the civil date.
     static func shortDate(_ d: ChurchDate, _ language: Language) -> String {
         guard (1...12).contains(d.month) else { return "" }

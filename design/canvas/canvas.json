@@ -1,13 +1,57 @@
 {
   "artboards": [
-    { "file": "Main.dc.html", "title": "Данас — TodayView.swift", "x": 0, "y": 0, "w": 390, "h": 1440, "print": "fixed" },
-    { "file": "Calendar.dc.html", "title": "Календар — CalendarMonthView.swift", "x": 510, "y": 0, "w": 390, "h": 1100, "print": "fixed" },
-    { "file": "FirstHour.dc.html", "title": "Први час — ServiceView.swift", "x": 1020, "y": 0, "w": 390, "h": 1380, "print": "fixed" }
+    {
+      "file": "Main.dc.html",
+      "title": "Данас — TodayView.swift",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 1700,
+      "print": "fixed"
+    },
+    {
+      "file": "Calendar.dc.html",
+      "title": "Календар — CalendarMonthView.swift",
+      "x": 510,
+      "y": 0,
+      "w": 390,
+      "h": 1100,
+      "print": "fixed"
+    },
+    {
+      "file": "FirstHour.dc.html",
+      "title": "Први час — ServiceView.swift",
+      "x": 1020,
+      "y": 0,
+      "w": 390,
+      "h": 1800,
+      "print": "fixed"
+    }
   ],
   "annotations": [
-    { "id": "computed", "x": 0, "y": -150, "w": 500, "text": "Reverse-engineered from ios/App/App/ — colours from Theme.swift, strings from the Swift literals.\n\nThe dates and fasting rules were produced by the app's own engine, not typed in: 11 September 2026 is 29 August on the church calendar, Усековање, a Friday — глас 5, сухоједење, катизме 19–20 at Matins and 18 at Vespers." },
-    { "id": "pending-gap", "x": 1020, "y": -150, "w": 390, "text": "The dashed block is the design decision most worth judging: content not yet transcribed shows as a NAMED gap, so a prayer rule never looks complete when it isn't." },
-    { "id": "fonts", "x": 510, "y": -150, "w": 390, "text": "Set in Cormorant Garamond and EB Garamond — the faces the app intends. It currently ships system serif; bundling the real files is open work item 5." }
+    {
+      "id": "computed",
+      "x": 0,
+      "y": -150,
+      "w": 500,
+      "text": "Reverse-engineered from ios/App/App/ — colours from Theme.swift, strings from the Swift literals.\n\nThe dates and fasting rules were produced by the app's own engine, not typed in: 11 September 2026 is 29 August on the church calendar, Усековање, a Friday — глас 5, сухоједење, катизме 19–20 at Matins and 18 at Vespers."
+    },
+    {
+      "id": "pending-gap",
+      "x": 1020,
+      "y": -150,
+      "w": 390,
+      "text": "The dashed block is the design decision most worth judging: content not yet transcribed shows as a NAMED gap, so a prayer rule never looks complete when it isn't."
+    },
+    {
+      "id": "fonts",
+      "x": 510,
+      "y": -150,
+      "w": 390,
+      "text": "Set in Cormorant Garamond and EB Garamond — the faces the app intends. It currently ships system serif; bundling the real files is open work item 5."
+    }
   ],
-  "launch": { "view": "canvas" }
+  "launch": {
+    "view": "canvas"
+  }
 }
