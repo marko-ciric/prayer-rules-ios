@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #78350f; } a:hover { color: #7f1d1d; }
+    .disp { font-family: "Cormorant Garamond", "Hoefler Text", Georgia, serif; }
+    .serif { font-family: "EB Garamond", "Hoefler Text", Georgia, serif; }
+  </style>
+</helmet>
+
+<div class="serif" style="width: 390px; min-height: 1380px; box-sizing: border-box; display: flex; flex-direction: column; background: linear-gradient(180deg, #faf5e8 0%, #f5efe0 100%); color: #292524; font-size: 15px; line-height: 1.5;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(250,250,249,0.95); border-bottom: 1px solid rgba(120,53,15,0.15);">
+    <span style="font-size: 15px; color: #78350f;">‹ Назад</span>
+    <div style="display: flex; align-items: center; gap: 10px; color: #78350f; font-size: 14px;">
+      <span>−</span><span>Aa</span><span>+</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 26px; padding: 32px 22px 40px;">
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;">
+      <span class="disp" style="font-size: 34px; font-weight: 700; color: #78350f; line-height: 1.05;">Први час</span>
+      <span style="font-size: 14px; font-style: italic; color: #57534e;">Око седам часова ујутро</span>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; padding: 14px 0;">
+      <span style="display: block; height: 1px; width: 110px; background: rgba(120,53,15,0.3);"></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" style="opacity: 0.7;"><path d="M12 2 L13 10 L21 11 L13 12 L12 22 L11 12 L3 11 L11 10 Z" fill="#78350f"></path><circle cx="12" cy="11" r="1.5" fill="#fffbeb"></circle></svg>
+      <span style="display: block; height: 1px; width: 110px; background: rgba(120,53,15,0.3);"></span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <span style="text-align: center; font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase; color: rgba(120,53,15,0.7);">Почетак</span>
+      <p style="margin: 0; color: #292524; font-size: {{bodySize}}px; line-height: 1.62;">У име Оца и Сина и Светога Духа. Амин.</p>
+      <p style="margin: 0; color: #292524; font-size: {{bodySize}}px; line-height: 1.62;">Слава Теби, Боже наш, слава Теби.</p>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span class="disp" style="font-size: 15px; font-weight: 600; color: rgba(120,53,15,0.85);">Царе Небески</span>
+        <p style="margin: 0; color: #292524; font-size: {{bodySize}}px; line-height: 1.62;">Царе Небески, Утешитељу, Душе Истине, Који си свуда присутан и све испуњаваш, Ризницо добара и Животодавче, дођи и усели се у нас, и очисти нас од сваке нечистоте, и спаси, Благи, душе наше.</p>
+      </div>
+      <span style="font-size: 14px; font-style: italic; color: rgba(127,29,29,0.75);">Трисвето — трипут:</span>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span class="disp" style="font-size: 15px; font-weight: 600; color: rgba(120,53,15,0.85);">Трисвето</span>
+        <p style="margin: 0; color: #292524; font-size: {{bodySize}}px; line-height: 1.62;">Свети Боже, Свети Крепки, Свети Бесмртни, помилуј нас.</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <span style="text-align: center; font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase; color: rgba(120,53,15,0.7);">Псалми часа</span>
+      <sc-for list="{{psalms}}" as="psalm" hint-placeholder-count="3">
+        <div style="display: flex; align-items: baseline; gap: 12px; padding: 12px; background: rgba(255,251,235,0.6); border: 1px solid rgba(120,53,15,0.2);">
+          <span class="disp" style="font-size: 24px; font-weight: 600; color: #78350f; width: 40px; text-align: right; flex: 0 0 auto;">{{psalm.number}}</span>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: rgba(120,53,15,0.6);">Псалам</span>
+            <span style="font-size: 15px; color: #44403c; line-height: 1.4;">{{psalm.opening}}</span>
+          </div>
+          <span style="margin-left: auto; font-size: 21px; color: rgba(120,53,15,0.4);">›</span>
+        </div>
+      </sc-for>
+      <span style="font-size: 14px; font-style: italic; color: rgba(127,29,29,0.75);">Слава… и сада… Алилуја, алилуја, алилуја, слава Теби, Боже. (трипут)</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <span style="text-align: center; font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase; color: rgba(120,53,15,0.7);">Тропари дана</span>
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px; background: rgba(245,245,244,0.7); border: 1px dashed rgba(168,162,158,0.7);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a8a29e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 3px; flex: 0 0 auto;"><path d="M6 3h12M6 21h12M8 3v4a4 4 0 0 0 4 4 4 4 0 0 0 4-4V3M8 21v-4a4 4 0 0 1 4-4 4 4 0 0 1 4 4v4"></path></svg>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 15px; color: #57534e;">Тропар и кондак дана, по Минеју.</span>
+          <span style="font-size: 11px; font-style: italic; color: #a8a29e;">Текст се припрема</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <span style="text-align: center; font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase; color: rgba(120,53,15,0.7);">Завршетак</span>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span class="disp" style="font-size: 15px; font-weight: 600; color: rgba(120,53,15,0.85);">Богородице Дјево</span>
+        <p style="margin: 0; color: #292524; font-size: {{bodySize}}px; line-height: 1.62;">Богородице Дјево, радуј се, благодатна Маријо, Господ је с Тобом; благословена си Ти међу женама и благословен је плод утробе Твоје, јер си родила Спаса душа наших.</p>
+      </div>
+      <span style="font-size: 14px; font-style: italic; color: rgba(127,29,29,0.75);">Господе, помилуј. (четрдесет пута)</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"bodySize":{"editor":"range","default":18,"min":14,"max":28,"step":2,"unit":"px","section":"Reader"},"$preview":{"width":390,"height":1380}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      // ReaderSettings.fontRange is 14...28 in the Swift; the tweak is that range.
+      bodySize: this.props.bodySize ?? 18,
+      // OpeningLinesSr.swift — the reader cites the Psalter rather than copying it.
+      psalms: [
+        { number: 5, opening: 'Речи моје чуј, Господе, разуми вапај мој…' },
+        { number: 89, opening: 'Господе, уточиште си нам био из нараштаја у нараштај…' },
+        { number: 100, opening: 'Милост и суд певаћу Ти, Господе…' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
