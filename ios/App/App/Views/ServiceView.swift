@@ -145,6 +145,7 @@ struct ServiceView: View {
 
         case .psalm(let number):
             Button(action: { psalm = number }) {
+                let openingLine = lang.openingLines[number].flatMap { $0.isEmpty ? nil : $0 }
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     Text("\(number)")
                         .font(Theme.display(24, weight: .semibold))
@@ -156,11 +157,13 @@ struct ServiceView: View {
                             .kerning(1.5)
                             .textCase(.uppercase)
                             .foregroundColor(Theme.amber900.opacity(0.6))
-                        Text((lang.openingLines[number] ?? "") + "…")
-                            .font(Theme.serif(15))
-                            .foregroundColor(Theme.stone700)
-                            .lineLimit(2)
-                            .multilineTextAlignment(.leading)
+                        if let openingLine {
+                            Text(openingLine + "…")
+                                .font(Theme.serif(15))
+                                .foregroundColor(Theme.stone700)
+                                .lineLimit(2)
+                                .multilineTextAlignment(.leading)
+                        }
                     }
                     Spacer(minLength: 0)
                     Text("›")
