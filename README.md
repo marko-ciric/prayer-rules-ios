@@ -6,7 +6,7 @@ Open it and you get today: its civil and church dates, the tone of the week, the
 
 The Psalter — 150 psalms in Serbian (Cyrillic) in Bishop Atanasije (Jevtić)'s translation from Church Slavonic and Greek, and in Brenton's English Septuagint (1851) — is now one of the three tabs, and the Hours and the rules cite it rather than duplicating it.
 
-> The project/repo is named **prayer-rules**. **Псалтир / Psalter** is the name of the Psalter tab and of the book, not of the app.
+> The project/repo is named **prayer-rules**. The app still presents itself to users as **Псалтир / Psalter** today, even as the broader calendar-and-rules work grows around it.
 
 ## Building
 
