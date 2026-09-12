@@ -157,7 +157,7 @@ struct ServiceView: View {
                             .kerning(1.5)
                             .textCase(.uppercase)
                             .foregroundColor(Theme.amber900.opacity(0.6))
-                        Text(openingLine.map { $0 + "…" } ?? CalendarStrings.psalmPreviewUnavailable.text(language))
+                        Text(openingLine ?? CalendarStrings.psalmPreviewUnavailable.text(language))
                             .font(Theme.serif(15))
                             .foregroundColor(Theme.stone700)
                             .lineLimit(2)

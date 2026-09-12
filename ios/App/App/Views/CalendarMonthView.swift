@@ -145,6 +145,7 @@ struct CalendarMonthView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel(day))
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
     private func accessibilityLabel(_ day: LiturgicalDay) -> String {
