@@ -26,6 +26,29 @@
 		A100001D294800000000001A /* NotesEn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001C294800000000001A /* NotesEn.swift */; };
 		A100001F294800000000001A /* FullTextSr.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001E294800000000001A /* FullTextSr.swift */; };
 		A1000021294800000000001A /* FullTextEn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000020294800000000001A /* FullTextEn.swift */; };
+		A1000027294800000000001A /* LocalizedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000026294800000000001A /* LocalizedText.swift */; };
+		A1000029294800000000001A /* CalendarStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000028294800000000001A /* CalendarStrings.swift */; };
+		A100002B294800000000001A /* OrthodoxCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100002A294800000000001A /* OrthodoxCalendar.swift */; };
+		A100002D294800000000001A /* Feast.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100002C294800000000001A /* Feast.swift */; };
+		A100002F294800000000001A /* FastingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100002E294800000000001A /* FastingRule.swift */; };
+		A1000031294800000000001A /* LiturgicalDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000030294800000000001A /* LiturgicalDay.swift */; };
+		A1000033294800000000001A /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000032294800000000001A /* Service.swift */; };
+		A1000035294800000000001A /* ReaderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000034294800000000001A /* ReaderSettings.swift */; };
+		A1000037294800000000001A /* CalendarNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000036294800000000001A /* CalendarNames.swift */; };
+		A1000039294800000000001A /* FixedFeasts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000038294800000000001A /* FixedFeasts.swift */; };
+		A100003B294800000000001A /* MovableFeasts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100003A294800000000001A /* MovableFeasts.swift */; };
+		A100003D294800000000001A /* CommonPrayers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100003C294800000000001A /* CommonPrayers.swift */; };
+		A100003F294800000000001A /* Hours.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100003E294800000000001A /* Hours.swift */; };
+		A1000041294800000000001A /* PrayerRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000040294800000000001A /* PrayerRules.swift */; };
+		A1000043294800000000001A /* DailyServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000042294800000000001A /* DailyServices.swift */; };
+		A1000045294800000000001A /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000044294800000000001A /* RootTabView.swift */; };
+		A1000047294800000000001A /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000046294800000000001A /* TodayView.swift */; };
+		A1000049294800000000001A /* CalendarMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000048294800000000001A /* CalendarMonthView.swift */; };
+		A100004B294800000000001A /* LiturgicalDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100004A294800000000001A /* LiturgicalDayView.swift */; };
+		A100004D294800000000001A /* FastBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100004C294800000000001A /* FastBadgeView.swift */; };
+		A100004F294800000000001A /* ServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100004E294800000000001A /* ServiceView.swift */; };
+		A1000051294800000000001A /* ReaderRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000050294800000000001A /* ReaderRoute.swift */; };
+		A1000053294800000000001A /* LanguageToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000052294800000000001A /* LanguageToggleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +73,29 @@
 		A100001C294800000000001A /* NotesEn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesEn.swift; sourceTree = "<group>"; };
 		A100001E294800000000001A /* FullTextSr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullTextSr.swift; sourceTree = "<group>"; };
 		A1000020294800000000001A /* FullTextEn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullTextEn.swift; sourceTree = "<group>"; };
+		A1000026294800000000001A /* LocalizedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedText.swift; sourceTree = "<group>"; };
+		A1000028294800000000001A /* CalendarStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarStrings.swift; sourceTree = "<group>"; };
+		A100002A294800000000001A /* OrthodoxCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrthodoxCalendar.swift; sourceTree = "<group>"; };
+		A100002C294800000000001A /* Feast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feast.swift; sourceTree = "<group>"; };
+		A100002E294800000000001A /* FastingRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastingRule.swift; sourceTree = "<group>"; };
+		A1000030294800000000001A /* LiturgicalDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiturgicalDay.swift; sourceTree = "<group>"; };
+		A1000032294800000000001A /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		A1000034294800000000001A /* ReaderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSettings.swift; sourceTree = "<group>"; };
+		A1000036294800000000001A /* CalendarNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarNames.swift; sourceTree = "<group>"; };
+		A1000038294800000000001A /* FixedFeasts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedFeasts.swift; sourceTree = "<group>"; };
+		A100003A294800000000001A /* MovableFeasts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovableFeasts.swift; sourceTree = "<group>"; };
+		A100003C294800000000001A /* CommonPrayers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonPrayers.swift; sourceTree = "<group>"; };
+		A100003E294800000000001A /* Hours.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hours.swift; sourceTree = "<group>"; };
+		A1000040294800000000001A /* PrayerRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerRules.swift; sourceTree = "<group>"; };
+		A1000042294800000000001A /* DailyServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyServices.swift; sourceTree = "<group>"; };
+		A1000044294800000000001A /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
+		A1000046294800000000001A /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		A1000048294800000000001A /* CalendarMonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarMonthView.swift; sourceTree = "<group>"; };
+		A100004A294800000000001A /* LiturgicalDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiturgicalDayView.swift; sourceTree = "<group>"; };
+		A100004C294800000000001A /* FastBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastBadgeView.swift; sourceTree = "<group>"; };
+		A100004E294800000000001A /* ServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceView.swift; sourceTree = "<group>"; };
+		A1000050294800000000001A /* ReaderRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderRoute.swift; sourceTree = "<group>"; };
+		A1000052294800000000001A /* LanguageToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageToggleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +145,14 @@
 			children = (
 				A1000006294800000000001A /* Strings.swift */,
 				A1000008294800000000001A /* LanguageManager.swift */,
+				A1000026294800000000001A /* LocalizedText.swift */,
+				A1000028294800000000001A /* CalendarStrings.swift */,
+				A100002A294800000000001A /* OrthodoxCalendar.swift */,
+				A100002C294800000000001A /* Feast.swift */,
+				A100002E294800000000001A /* FastingRule.swift */,
+				A1000030294800000000001A /* LiturgicalDay.swift */,
+				A1000032294800000000001A /* Service.swift */,
+				A1000034294800000000001A /* ReaderSettings.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -112,6 +166,14 @@
 				A100000E294800000000001A /* PsalmListItemView.swift */,
 				A1000010294800000000001A /* PsalmListView.swift */,
 				A1000012294800000000001A /* PsalmReaderView.swift */,
+				A1000044294800000000001A /* RootTabView.swift */,
+				A1000046294800000000001A /* TodayView.swift */,
+				A1000048294800000000001A /* CalendarMonthView.swift */,
+				A100004A294800000000001A /* LiturgicalDayView.swift */,
+				A100004C294800000000001A /* FastBadgeView.swift */,
+				A100004E294800000000001A /* ServiceView.swift */,
+				A1000050294800000000001A /* ReaderRoute.swift */,
+				A1000052294800000000001A /* LanguageToggleView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -134,6 +196,13 @@
 				A100001C294800000000001A /* NotesEn.swift */,
 				A100001E294800000000001A /* FullTextSr.swift */,
 				A1000020294800000000001A /* FullTextEn.swift */,
+				A1000036294800000000001A /* CalendarNames.swift */,
+				A1000038294800000000001A /* FixedFeasts.swift */,
+				A100003A294800000000001A /* MovableFeasts.swift */,
+				A100003C294800000000001A /* CommonPrayers.swift */,
+				A100003E294800000000001A /* Hours.swift */,
+				A1000040294800000000001A /* PrayerRules.swift */,
+				A1000042294800000000001A /* DailyServices.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -226,6 +295,29 @@
 				A100001D294800000000001A /* NotesEn.swift in Sources */,
 				A100001F294800000000001A /* FullTextSr.swift in Sources */,
 				A1000021294800000000001A /* FullTextEn.swift in Sources */,
+				A1000027294800000000001A /* LocalizedText.swift in Sources */,
+				A1000029294800000000001A /* CalendarStrings.swift in Sources */,
+				A100002B294800000000001A /* OrthodoxCalendar.swift in Sources */,
+				A100002D294800000000001A /* Feast.swift in Sources */,
+				A100002F294800000000001A /* FastingRule.swift in Sources */,
+				A1000031294800000000001A /* LiturgicalDay.swift in Sources */,
+				A1000033294800000000001A /* Service.swift in Sources */,
+				A1000035294800000000001A /* ReaderSettings.swift in Sources */,
+				A1000037294800000000001A /* CalendarNames.swift in Sources */,
+				A1000039294800000000001A /* FixedFeasts.swift in Sources */,
+				A100003B294800000000001A /* MovableFeasts.swift in Sources */,
+				A100003D294800000000001A /* CommonPrayers.swift in Sources */,
+				A100003F294800000000001A /* Hours.swift in Sources */,
+				A1000041294800000000001A /* PrayerRules.swift in Sources */,
+				A1000043294800000000001A /* DailyServices.swift in Sources */,
+				A1000045294800000000001A /* RootTabView.swift in Sources */,
+				A1000047294800000000001A /* TodayView.swift in Sources */,
+				A1000049294800000000001A /* CalendarMonthView.swift in Sources */,
+				A100004B294800000000001A /* LiturgicalDayView.swift in Sources */,
+				A100004D294800000000001A /* FastBadgeView.swift in Sources */,
+				A100004F294800000000001A /* ServiceView.swift in Sources */,
+				A1000051294800000000001A /* ReaderRoute.swift in Sources */,
+				A1000053294800000000001A /* LanguageToggleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

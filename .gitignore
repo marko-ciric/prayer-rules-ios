@@ -65,3 +65,12 @@ fastlane/test_output
 ios/App/build/
 ios/App/DerivedData/
 ios/.xcode.env.local
+
+# Capacitor Android - Gradle build artifacts
+android/.gradle/
+android/app/build/
+android/build/
+
+# Seeded design-canvas payload — regenerate with seed-canvas.mjs, do not commit
+design/canvas/*.html
+!design/canvas/*.dc.html

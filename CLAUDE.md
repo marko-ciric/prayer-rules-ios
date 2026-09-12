@@ -1,8 +1,8 @@
 # Prayer Rules — project guide for Claude
 
-The 150 Psalms of David in **Serbian (Cyrillic)** and **English**, for Orthodox liturgical use: numbering and verse divisions follow the Septuagint (LXX) tradition.
+An Orthodox **church-calendar** app for iPhone, on the **Julian** reckoning the Serbian Orthodox Church keeps. The day is the organising unit: Today shows both dates, the tone, the fast, the commemorations, the prayer rules, the Hours, the kathismata appointed, and the space held for the day's service; the Calendar shows the fasting year as a month grid and opens any day in full. The Psalter — 150 psalms in **Serbian (Cyrillic)** and **English**, LXX numbering and verse divisions — is one of the three tabs, and the Hours and rules cite it rather than duplicating it.
 
-**Naming**: the *project/repo* is `prayer-rules` (`marko-ciric/prayer-rules-ios`); the *app* still presents itself to users as **Псалтир / Psalter**, because its content is the Psalter. Keep that split — rename project identifiers freely, but don't touch `AppStrings.title`, `CFBundleDisplayName`, or the word "Psalter"/"Псалтир" where it names the liturgical book. If the app's scope later broadens beyond the Psalter (morning/evening prayers, canons, akathists), that's when the user-facing name should change too.
+**Naming**: the *project/repo* is `prayer-rules` (`marko-ciric/prayer-rules-ios`). **Псалтир / Psalter** now names the Psalter *tab* and the book, not the app — the 2026-09 calendar redesign is exactly the broadening of scope the old naming note anticipated. `AppStrings.title`/`subtitle` are the Psalter tab's own header and stay as they are; `CFBundleDisplayName` is still `Псалтир` and should be revisited with the user before release, since the app is now more than the Psalter.
 
 **Identifiers are English-only.** Type, property, function and file names use English (`Kathisma`, `number`, `range`, `psalms`, `openingLines`, `notes`, `fullText`, `verse`). Serbian and Church Slavonic appear **only inside string literals** — the psalm text and the `AppStrings.sr` UI copy. Don't reintroduce Serbian identifiers, and equally don't "translate" content strings: the Serbian text is Cyrillic and stays exactly as it is.
 
@@ -14,11 +14,54 @@ The 150 Psalms of David in **Serbian (Cyrillic)** and **English**, for Orthodox 
 |---|---|
 | Stack | Swift, SwiftUI, iOS 15+. No third-party deps, no Capacitor, no WebView. iPhone only (`TARGETED_DEVICE_FAMILY = 1`). |
 | Entry point | `PrayerRulesApp.swift` (`@main`) → `ContentView` |
-| State shape | `ContentView` holds `@State selected: Int?` (psalm number or nil) and `@State fontSize: CGFloat`. When `selected == nil` show `PsalmListView`, otherwise `PsalmReaderView`. Same shape as the old `App.jsx`. |
+| State shape | `ContentView` owns two `@StateObject`s injected into everything — `LanguageManager` and `ReaderSettings` (the shared, persisted reader font size) — and hands off to `RootTabView`. Each tab holds its own navigation state; full-screen readers are presented through one `ReaderRoute` cover rather than several stacked `.fullScreenCover` modifiers. |
 | i18n | `LanguageManager` (`ObservableObject`, injected as an `@EnvironmentObject`). `language` is `.sr` or `.en`, persisted to `UserDefaults` under key `"psalter-lang"` (same key the web app used for `localStorage`, unrelated storage). Exposes `t` (`AppStrings`), `openingLines`, `notes`, `fullText` — same shape as the old `useLanguage()`. |
-| Build | Open `ios/App/App.xcodeproj` in Xcode and run. The project file was hand-authored as text in a sandbox with no macOS/Xcode toolchain, but **it has since been compiled**: CodeQL's Swift `autobuild` ran `xcodebuild` against it on a macOS runner twice, extracting 17/17 Swift files with 0 unresolved AST nodes (~464k nodes). So the pbxproj drives `xcodebuild` and every source type-checks. Not yet covered: linking, asset catalog compilation, code signing, and anything only visible at runtime. |
+| Build | Open `ios/App/App.xcodeproj` in Xcode and run. The pbxproj is hand-authored text, but it is known to drive `xcodebuild`: CodeQL's Swift `autobuild` compiled the pre-redesign tree (17/17 files, 0 unresolved AST nodes). **The 23 files added by the calendar redesign have not been through a compiler** — this sandbox has no Swift toolchain, and `build.yml` only runs on `main` and on PRs into it, so a feature-branch push does not exercise it. Open a PR (or run `xcodebuild` locally) before trusting the branch. |
 
-### Data model
+### The liturgical engine (`ios/App/App/Models/`)
+
+Everything the calendar shows is **computed**, not tabulated — there is no per-day table to keep in step, and the whole engine is pure value types with no Foundation date maths beyond one `Date` → JDN bridge.
+
+```
+LocalizedText.swift    # { sr, en } + text(_:) — see the i18n note in Conventions
+OrthodoxCalendar.swift # JDN ↔ Gregorian ↔ Julian, weekday, Paschalion
+Feast.swift            # Feast + FeastRank (commemoration/major/great/pascha)
+FastingRule.swift      # FastLevel + the cascade that resolves a day's fast
+LiturgicalDay.swift    # LiturgicalSeason, KathismaReading, the composed day
+Service.swift          # ServiceBlock/ServiceSection/Service — rules, Hours, services
+ReaderSettings.swift   # shared, persisted reader font size
+CalendarStrings.swift  # UI copy for the calendar surfaces, as LocalizedText
+```
+
+Points worth knowing before changing any of it:
+
+- **All date arithmetic goes through the Julian Day Number.** The Julian ("church") date and the civil (Gregorian) date are two renderings of the same integer, so they cannot drift. `OrthodoxCalendar.weekday(fromJDN:)` derives the weekday from the JDN too, rather than from `Calendar`, for the same reason.
+- **Pascha** is Meeus's Julian algorithm, which yields a *Julian* calendar date; feeding it through `jdn(julianYear:...)` makes the 13-day offset fall out for free. Verified against 2024–2028.
+- **`FastingRule` is an ordered cascade**, first match wins: fast-free periods → Cheesefare → Great Lent and Holy Week → Apostles' → Dormition → Nativity → the fixed strict days → the weekly Wednesday and Friday. Then a feast's `fastRelaxation` is applied *only if it is less strict*, **floored at wine and oil inside Great Lent** (a polyeleos feast in Lent gets oil, never fish) and refused outright in Holy Week and on Clean Monday. The Annunciation and Palm Sunday get their fish from inside the cascade, which is why they bypass that floor.
+- **The Apostles' Fast needs its month guard.** `sincePascha >= 57` is also true of dates in January that belong to the *previous* Paschal cycle; the `m == 5 || (m == 6 && d <= 28)` clause is what keeps February out of the fast. Don't remove it.
+- **The tone** is the eight-week Octoechos cycle counted from Thomas Sunday, turning continuously (through Pentecost, through Lent) and set aside in Bright and Holy Week.
+- **Kathismata** use the ordinary-time weekly distribution; Great Lent and Bright Week return nil, and the UI says why, rather than showing a reading that is not served.
+- These are the **general norms of the Typikon** as published for parish use. `CalendarStrings.fastingDisclaimer` says so on every day; keep it on screen.
+
+A Python port of the whole engine, checked against independently known dates (Pascha 2024–2028, Julian↔civil for Божић/Савиндан/Видовдан, and ~30 fasting days), lives in the session scratchpad rather than the repo. If you change the cascade, re-derive it rather than trusting the Swift by eye — there is no Swift toolchain here.
+
+### Calendar and service data (`ios/App/App/Data/`)
+
+```
+CalendarNames.swift   # month (nominative + genitive) and weekday names, both languages
+FixedFeasts.swift     # the Menaion — keyed by month*100+day on the JULIAN calendar
+MovableFeasts.swift   # Triodion (days before Pascha) + Pentecostarion (days after)
+CommonPrayers.swift   # the beginning, the Creed, the Theotokia, the dismissal
+Hours.swift           # the four Little Hours — psalms cited, not copied
+PrayerRules.swift     # the morning and evening rule
+DailyServices.swift   # the space for the Menaion; keyed by Feast.id, near-empty by design
+```
+
+`FixedFeasts` is a working selection, not the whole Menaion: the Twelve Great Feasts, the days a Serbian household keeps as a slava, and the commemorations carrying their own service. **Adding an entry is the whole change** — the calendar, the fasting rule and the Service of the day all pick it up.
+
+Content that has not been transcribed is `ServiceBlock.pending(…)` carrying the name the prayer is known by, so the app renders a *labelled gap* rather than a service that looks complete and isn't. The seeded troparia in `FixedFeasts`/`MovableFeasts` are the widely printed ones; **every liturgical text in the app should be checked against a printed molitvenik or Minej before release.**
+
+### Psalter data
 
 Psalm content lives in plain Swift dictionaries under `ios/App/App/Data/`:
 
@@ -40,15 +83,25 @@ Each `FullText*.swift` is `[Int: [String]]`: one verse per array entry, position
 ### Views (`ios/App/App/Views/`)
 
 ```
+ContentView.swift         # root — owns LanguageManager + ReaderSettings, hands off to the tabs
+RootTabView.swift         # the three tabs: Today, Calendar, Psalter
+TodayView.swift           # today, plus the language toggle
+CalendarMonthView.swift   # month grid banded by fast, with the selected day beneath it
+LiturgicalDayView.swift   # ONE day, in full — rendered by both Today and Calendar
+FastBadgeView.swift       # the day's fast, stated; plus the grid's small band
+ServiceView.swift         # reader for a rule, an Hour, or a service
+ReaderRoute.swift         # the single full-screen cover the day screens open through
+LanguageToggleView.swift  # SR / EN, shared by Today and the Psalter list
 OrnamentView.swift        # decorative diamond ornament, drawn with Canvas/Path (ports the inline SVG)
 DividerView.swift         # horizontal divider with center ornament
 PsalmListItemView.swift   # single row in the list view
-PsalmListView.swift       # search + kathisma filter + scrollable list + header/footer + language toggle
+PsalmListView.swift       # search + kathisma filter + scrollable list + header/footer
 PsalmReaderView.swift     # full-text reader with drop cap, font controls, prev/next navigation
-ContentView.swift         # root view, holds `selected` and `fontSize`
 ```
 
-`PsalmListView` builds its `allPsalms` array fresh from `lang.openingLines`/`lang.fullText` (computed property, not cached) — recomputed on each access. `PsalmReaderView` falls back to a "not yet available" panel when `lang.fullText[number]` is nil.
+`LiturgicalDayView` is the point of the whole arrangement: Today and Calendar render the *same* view for a different day, so the two can never disagree about what a day contains. The month grid never signals with colour alone — every cell also carries an accessibility label naming the date, the fast and the feast, and the day view spells the rule out in words.
+
+`PsalmListView` builds its `allPsalms` array fresh from `lang.openingLines`/`lang.fullText` (computed property, not cached) — same "always fresh" behavior as the React version's `useMemo`. `PsalmReaderView` falls back to a "not yet available" panel when `lang.fullText[number]` is nil.
 
 `Theme.swift` (`ios/App/App/Extensions/`) holds hardcoded Color constants approximating the web app's Tailwind amber/stone/red palette, plus `Theme.display()`/`Theme.serif()` font helpers. **Those font helpers currently return system serif-design fonts, not the actual Cormorant Garamond / EB Garamond faces** the web app used — see Open work below.
 
@@ -57,7 +110,9 @@ ContentView.swift         # root view, holds `selected` and `fontSize`
 - **Fonts**: using `.system(design: .serif)` instead of the real Cormorant Garamond (display) / EB Garamond (body) faces. The web app loaded these from Google Fonts; the native app needs the actual `.ttf`/`.otf` files bundled and registered via `Info.plist`'s `UIAppFonts` key. Not done yet.
 - **Drop cap**: the web reader used a CSS float so body text wrapped around the oversized first letter. SwiftUI has no direct equivalent, so `PsalmReaderView` renders the drop cap and the rest of verse 1 side-by-side in an `HStack` instead — visually close but not a true wrap.
 - **App Icon / Splash**: still the original Capacitor default placeholders (blue ✕ on grid), untouched by this conversion. Must be replaced before any TestFlight/App Store submission.
-- **No router**: `selected` is transient `@State`, so backgrounding/relaunching the app returns to the list. That's intentional, matching the original no-router decision.
+- **No router**: still transient `@State` per tab, so backgrounding and relaunching returns to Today. Intentional; the calendar always opens on the current day, which is the right place to land.
+- **Menaion content**: `DailyServices.byFeast` is empty. The Today view falls back to the feast's troparion/kontakion where one is seeded and otherwise shows a labelled "in preparation" panel. This is the redesign's main open content surface.
+- **The prayer rules are a frame, not a text.** The beginning, the Creed, Psalm 50, the Theotokia and the dismissal are complete; the numbered morning and evening prayers, the Hours' troparia and their closing prayers are `.pending` placeholders naming what belongs there.
 
 ## The psalm texts
 
@@ -96,28 +151,36 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 
 ## Open work
 
-### Done recently
-- **Converted the app to native SwiftUI, iPhone-only.** Full port of the list view, reader and i18n, plus all psalm data (150 opening lines x 2 languages, 23 full-text psalms x 2 languages, 30 liturgical notes x 2 languages, 20 kathismata). Removed the Capacitor/WebView plumbing from the Xcode project and restricted the target to iPhone.
+### Done in the most recent sessions
+- **Rebuilt the app around the church calendar** (see the top of this file). Added a computed liturgical engine — Julian/Gregorian conversion, the Paschalion, the Octoechos tone, the kathisma distribution, and a fasting cascade covering the four fasting seasons, the fast-free weeks, the weekly Wednesday and Friday and the feast relaxations — plus the Menaion/Triodion/Pentecostarion data, the morning and evening rules, the four Little Hours, and three tabs (Today, Calendar, Psalter) over a shared `LiturgicalDayView`. 23 new Swift files, all registered in the pbxproj. The arithmetic was verified via a Python port against independently known dates; **the Swift itself has not been compiled** — see the Build row.
+- Moved the reader font size out of `ContentView`'s `@State` into a persisted `ReaderSettings` shared by every text screen.
+- **Deleted the legacy web app** -- `src/`, `android/`, and the Vite/Capacitor config files, 76 files and ~6.5k lines. It existed only as a parity reference for the port; that use is spent.
+- **Corrected the README licence wording**, which had described the psalm text as "a translation of public-domain scripture" -- see Decision history.
+
+### Done in earlier sessions
+- **Converted the app to native SwiftUI, iPhone-only** (see top of this file). Added `ios/App/App/{PrayerRulesApp,Views,Models,Data,Extensions}` with a full port of the list view, reader, i18n, and all psalm data (150 opening lines × 2 languages, 23 full-text psalms × 2 languages, 30 liturgical notes × 2 languages, 20 katizme). Removed the Capacitor/WebView plumbing from the `ios/App` Xcode project (AppDelegate, Main.storyboard, the `CapApp-SPM` Swift package dependency) and restricted the target to iPhone only.
 - **Added `xcodebuild` build CI** (see Secondary polish), so build regressions surface directly rather than being inferred from CodeQL's autobuild.
 - **Regenerated `OpeningLinesEn.swift` from Brenton** instead of KJV. The full text and footer had credited Brenton since the translation switch while the list view still showed KJV openings remapped onto LXX numbers -- the app credited one translation and displayed another. Verified by checking that each new opening line is an exact prefix of verse 1 of the committed full text (23/23).
 - **Renamed all Serbian identifiers to English** (`Kathisma`, `number`, `openingLines`, `fullText`, ...). Verified content-safe: all 1032 quoted strings byte-identical across the rename.
-- **Deleted the legacy web app** -- `src/`, `android/` and the Vite/Capacitor config files, 76 files and ~6.5k lines. It existed only as a parity reference for the port; that use is spent.
-- **Corrected the README licence wording**, which had described the psalm text as "a translation of public-domain scripture" -- see Decision history.
+- Previously (prior session): switched English full text from KJV to **Brenton's English Septuagint** for the 23 existing psalms (1–8, 46, 50, 85, 89, 90, 101–103, 134, 136, 140, 142, 148–150).
 
 ### Highest-priority remaining work
 
-1. **Open `ios/App/App.xcodeproj` in real Xcode and run it on a simulator.** The code is known to compile (see the Build row), so what's left to confirm is runtime behaviour and layout — the drop cap, the kathisma chips, the font clamp, the SR/EN toggle — not whether it builds.
-2. **Rename the Xcode target from `App` to `PrayerRules`** — do this *in Xcode* (select the target → Identity and Type → Name, and let Xcode's rename refactor update the scheme, product name, and paths), not by hand-editing the pbxproj. `App` is a leftover Capacitor-generated name; it was deliberately left alone during the prayer-rules rename because renaming a target blind, with no way to build and check, risks breaking the project for cosmetic gain. Xcode does it safely in seconds. The bundle identifier is already `rs.prayerrules.app`.
-3. **Bundle the real Cormorant Garamond / EB Garamond fonts** and wire them up via `Info.plist`'s `UIAppFonts`, replacing the `Theme.display()`/`Theme.serif()` system-font stand-ins.
-4. **Fill in the remaining 127 psalms** (currently 23/150 have full text). The two languages are blocked on different things, and neither is a coding problem:
+1. **Build it.** The 23 new files have never seen a compiler. Open a PR (which runs `build.yml` on a macOS runner) or run `xcodebuild -project ios/App/App.xcodeproj -alltargets -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build` locally, and fix what falls out before anything else.
+2. **Check the liturgical texts against print.** Every troparion in `FixedFeasts`/`MovableFeasts` and every prayer in `CommonPrayers` should be read against a printed molitvenik/Minej. Getting a prayer subtly wrong is worse than leaving the gap.
+3. **Open `ios/App/App.xcodeproj` in real Xcode and run it on a simulator** — the month grid at small widths, the fast colours in bright light, the drop cap, the font clamp, the SR/EN toggle.
+4. **Rename the Xcode target from `App` to `PrayerRules`** — do this *in Xcode* (select the target → Identity and Type → Name, and let Xcode's rename refactor update the scheme, product name, and paths), not by hand-editing the pbxproj. `App` is a leftover Capacitor-generated name; it was deliberately left alone during the prayer-rules rename because renaming a target blind, with no way to build and check, risks breaking the project for cosmetic gain. Xcode does it safely in seconds. The bundle identifier is already `rs.prayerrules.app`.
+5. **Bundle the real Cormorant Garamond / EB Garamond fonts** and wire them up via `Info.plist`'s `UIAppFonts`, replacing the `Theme.display()`/`Theme.serif()` system-font stand-ins.
+6. **Fill in the Menaion and the prayer rules** — `DailyServices.byFeast` for services, `FixedFeasts` for more commemorations, and the `.pending` blocks in `PrayerRules`/`Hours`. This is meant to be incremental: one entry at a time, no other change.
+7. **Fill in the remaining 127 psalms** (currently 23/150 have full text). The two languages are blocked on different things, and neither is a coding problem:
    - **English** is unblocked — extend the Brenton fetcher to all 150 and emit into `FullTextEn.swift`. Watch LXX 9, 113, 114, 115, 146, 147, the LXX/MT split boundaries.
    - **Serbian** is blocked on **permission**, not availability: the Jevtić translation is most likely under copyright until ~2091 (see Decision history). Adding the remaining 127 would put the complete translated Psalter in a public repo. Get a licence from the estate or publisher first.
    - **Church Slavonic** was explored as a public-domain alternative. Encoding is *solved* — molitvenik.in.rs's psalter PDF is in the legacy UCS codepage, and the `cslavonic` Python package (MIT, from the Slavonic Computing Initiative) decodes it completely: 54 ASCII stand-ins plus 13 further characters, zero residual, genuine punctuation preserved. It is blocked on **structure**: neither that PDF nor the Initiative's `AugmentedPsalter.txt` (native Unicode) delimits all 150 psalms — 80 and 95 psalm markers respectively — and neither marks verse divisions at all. Both are continuous-reading liturgical editions. Do not infer the missing boundaries; get a per-psalm edition. azbyka.ru appears to have one but returns 403 to scripted requests.
-5. **iOS App Icon and Splash** — replace the Capacitor-era placeholders before any TestFlight/App Store submission. Needs design input.
+8. **iOS App Icon and Splash** — replace the Capacitor-era placeholders before any TestFlight/App Store submission. Needs design input.
 
 ### Secondary polish
 - **Code scanning runs via GitHub's CodeQL default setup**, configured in repo settings rather than in-repo. There is deliberately no `.github/workflows/codeql.yml`: an advanced-config workflow cannot upload results while default setup is enabled, so the one inherited from `Psalter-Serbian-` was removed. Don't re-add a CodeQL *workflow* without first switching the repo from default to advanced setup — note that `build.yml` is a plain build lane, not a CodeQL config, so it does not conflict. Adding it also gives default setup's `actions` language something to analyse; that scan had been failing with "CodeQL could not process any code written in GitHub Actions" from the moment the repo had no workflow files at all.
-- **Build CI**: `.github/workflows/build.yml` runs `xcodebuild` against `ios/App/App.xcodeproj` on a `macos-latest` runner for every push and PR to `main`. It builds with `-alltargets` rather than `-scheme` on purpose — no scheme is checked into the project, and Xcode's auto-generated schemes don't exist on a fresh CI checkout. `-alltargets` also survives the pending rename of the `App` target (Open Work item 2) without needing an edit. Code signing is disabled (`CODE_SIGNING_ALLOWED=NO`); this checks that the app compiles and links, not that it can be distributed.
+- **Build CI**: `.github/workflows/build.yml` runs `xcodebuild` against `ios/App/App.xcodeproj` on a `macos-latest` runner for every push and PR to `main`. It builds with `-alltargets` rather than `-scheme` on purpose — no scheme is checked into the project, and Xcode's auto-generated schemes don't exist on a fresh CI checkout. `-alltargets` also survives the pending rename of the `App` target (Open Work item 4) without needing an edit. Code signing is disabled (`CODE_SIGNING_ALLOWED=NO`); this checks that the app compiles and links, not that it can be distributed.
 - No tests. Consider a small XCTest/XCUITest smoke test (list renders, language toggle works, font controls clamp) once the app builds.
 
 ## Conventions and small things
@@ -126,9 +189,13 @@ To re-run for additional psalms, edit the `PSALMS` list at the top of the script
 - Brenton uses "Pause." where KJV uses "Selah." — keep as-is.
 - The reader's drop cap uses the first character of verse 1 (`verse.first`). If verse 1 starts with punctuation or a digit this will look wrong; verify when adding new psalms.
 - The font-size range is clamped `[14, 28]` in `PsalmReaderView.swift`. Don't add a slider without adjusting bounds in both call sites (the two buttons).
-- When you add a new UI string, add it to **both** `AppStrings.sr` and `AppStrings.en` in `Strings.swift` — there's no fallback.
+- **New UI strings use `LocalizedText`**, in `CalendarStrings.swift` (or beside the data they belong to). The type takes `sr` and `en` together, so a one-language string is a compile error — which the old arrangement could not catch. The Psalter screens still read from `AppStrings` in `Strings.swift`; if you add a string *there*, it still has to go into both `AppStrings.sr` and `AppStrings.en`, because that pair has no fallback.
+- `LocalizedText` deliberately exposes a plain `text(_:)` method rather than `callAsFunction`. `feast.name(language)` reads better but leans on `callAsFunction` resolving through a member access, and nothing here can compile-check that.
+- Julian dates in `FixedFeasts.swift` are **Julian**. Божић is 25 December there and 7 January on screen. Never "fix" a date by adding thirteen days.
 
 ## Decision history
+
+- **2026-09**: Rebuilt the app around the **church calendar**, at the user's request: the app is more than psalm reading and the Hours, so the day became the organising unit — Today (rules, Hours, kathismata, and a held space for the service), a Calendar carrying the fasting rules, and the Psalter demoted to one of three tabs. Two decisions inside that are worth keeping: the calendar is **computed, not tabulated** (a fasting table would be another 365-row artefact to maintain and to get wrong), and missing content is a **visible, labelled gap** rather than a silent omission (`ServiceBlock.pending`), because a prayer rule that looks complete and isn't is worse than one that admits what it is missing. `LocalizedText` was introduced at the same time so a new string cannot exist in one language only.
 
 - **2026-09**: Regenerated `OpeningLinesEn.swift` from Brenton instead of KJV. The full text and the in-app footer had said Brenton since the 2026-06 switch, but the opening lines shown in the list view were still KJV manually remapped onto LXX numbers — so the app credited one translation and displayed another, and the remap was exactly the thing the 2026-06 entry calls unfixable at the split boundaries. Verified by checking that, for all 23 psalms whose Brenton full text is already committed, each new opening line is an exact prefix of that text's verse 1 (23/23). Inscriptions stay excluded, matching `FullTextEn.swift`.
 - **2026-09**: Deleted the legacy web app (`src/`, `android/`, and the Vite/Capacitor config files) — 76 files, ~6.5k lines. It had been kept only as a parity reference for the native port; with the port merged, building in CI and its data verified, the reference had no remaining use and its presence made the repo look like a live web project. The history is preserved in git and in the original `Psalter-Serbian-` repository.
