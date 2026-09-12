@@ -65,18 +65,20 @@ enum OrthodoxCalendar {
 
     // MARK: - Bridging to Foundation
 
-    private static let gregorian: Calendar = {
+    private static func gregorianCalendar() -> Calendar {
         var c = Calendar(identifier: .gregorian)
         c.timeZone = TimeZone.current
         return c
-    }()
+    }
 
     static func jdn(from date: Date) -> Int {
+        let gregorian = gregorianCalendar()
         let c = gregorian.dateComponents([.year, .month, .day], from: date)
         return jdn(gregorianYear: c.year ?? 1970, month: c.month ?? 1, day: c.day ?? 1)
     }
 
     static func date(fromJDN j: Int) -> Date {
+        let gregorian = gregorianCalendar()
         let civil = civilDate(fromJDN: j)
         var c = DateComponents()
         c.year = civil.year

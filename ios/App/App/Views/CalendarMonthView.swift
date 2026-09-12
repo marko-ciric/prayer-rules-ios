@@ -145,6 +145,7 @@ struct CalendarMonthView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel(day))
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
     private func accessibilityLabel(_ day: LiturgicalDay) -> String {
@@ -203,7 +204,13 @@ struct CalendarMonthView: View {
 
     private func step(_ delta: Int) {
         let total = year * 12 + (month - 1) + delta
-        year = total / 12
-        month = total % 12 + 1
+        var nextYear = total / 12
+        var nextMonth = total % 12
+        if nextMonth < 0 {
+            nextMonth += 12
+            nextYear -= 1
+        }
+        year = nextYear
+        month = nextMonth + 1
     }
 }

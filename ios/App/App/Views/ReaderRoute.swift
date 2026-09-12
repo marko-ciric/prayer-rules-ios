@@ -5,16 +5,17 @@ import SwiftUI
 /// One route rather than several `.fullScreenCover` modifiers on the same
 /// view: stacking those is unreliable, and everything a day links to is a
 /// full-screen reader anyway.
-enum ReaderRoute: Identifiable {
-    case psalm(Int)
-    case service(Service)
-
-    var id: String {
-        switch self {
-        case .psalm(let n): return "psalm-\(n)"
-        case .service(let s): return "service-\(s.id)"
-        }
+struct ReaderRoute: Identifiable {
+    enum Destination {
+        case psalm(Int)
+        case service(Service)
     }
+
+    let id = UUID()
+    let destination: Destination
+
+    static func psalm(_ number: Int) -> Self { Self(destination: .psalm(number)) }
+    static func service(_ service: Service) -> Self { Self(destination: .service(service)) }
 }
 
 extension View {
@@ -29,7 +30,7 @@ extension View {
     ) -> some View {
         fullScreenCover(item: route) { destination in
             Group {
-                switch destination {
+                switch destination.destination {
                 case .psalm(let number):
                     PsalmReaderCover(start: number) { route.wrappedValue = nil }
                 case .service(let service):

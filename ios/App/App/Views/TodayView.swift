@@ -27,7 +27,7 @@ struct TodayView: View {
 
                 LiturgicalDayView(day: today, onOpen: onOpen)
 
-                footer(language)
+                footer()
             }
             .padding(.horizontal, 16)
             .padding(.top, 12)
@@ -37,7 +37,7 @@ struct TodayView: View {
     }
 
     @ViewBuilder
-    private func footer(_ language: Language) -> some View {
+    private func footer() -> some View {
         VStack(spacing: 0) {
             DividerView()
             Text(lang.t.alleluia)

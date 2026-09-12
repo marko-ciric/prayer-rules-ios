@@ -6,17 +6,15 @@ Open it and you get today: its civil and church dates, the tone of the week, the
 
 The Psalter — 150 psalms in Serbian (Cyrillic) in Bishop Atanasije (Jevtić)'s translation from Church Slavonic and Greek, and in Brenton's English Septuagint (1851) — is now one of the three tabs, and the Hours and the rules cite it rather than duplicating it.
 
-> The project/repo is named **prayer-rules**. **Псалтир / Psalter** is the name of the Psalter tab and of the book, not of the app.
+> The project/repo is named **prayer-rules**. The app still presents itself to users as **Псалтир / Psalter** today, even as the broader calendar-and-rules work grows around it.
 
-**This repo is mid-conversion** from a React/Vite/Capacitor web app to a **native SwiftUI, iPhone-only app**. See `CLAUDE.md` for the full status. The native app is now the primary target; the original web app is kept temporarily for reference and will be removed.
-
-## Native iOS app
+## Building
 
 ```
 ios/App/App.xcodeproj
 ```
 
-Open in Xcode (15+, iOS 15+ deployment target) and run. Swift/SwiftUI, no third-party dependencies, no WebView.
+Open in Xcode (15+, iOS 15+ deployment target) and run. Swift/SwiftUI, no third-party dependencies, no WebView, iPhone only.
 
 ```
 ios/App/App/
@@ -28,6 +26,8 @@ ios/App/App/
 │                         # the rules and Hours, the Psalter text
 └── Extensions/           # Theme.swift (colours, fast colours, font helpers)
 ```
+
+`.github/workflows/build.yml` runs `xcodebuild` against the project on every push and pull request to `main`.
 
 ## The calendar
 
@@ -54,17 +54,21 @@ The fasting rules shown are the general norms of the Typikon as published for pa
 
 The calendar, the fasting rules and the fixed frame of the rules and Hours are complete. The day-proper material is not, and the app shows a labelled gap rather than a shorter service: the numbered morning and evening prayers, the Hours' troparia and closing prayers, and the services of the Menaion. Adding a commemoration is one entry in `Data/FixedFeasts.swift`; adding its service is one entry in `Data/DailyServices.swift`.
 
-## Legacy web app (reference only)
+Numbering follows the **Septuagint (LXX)** tradition throughout, as Orthodox usage requires. This differs from the Masoretic/KJV numbering through most of the Psalter — see `CLAUDE.md` for the mapping.
 
-`src/`, `android/`, and the root Vite/Capacitor config files are the original React implementation this native app was ported from. Not maintained going forward — see `CLAUDE.md`'s "Open work" for the plan to remove them.
+## Sources
 
-## Source
-
-- Serbian Psalter translation by Епископ Атанасије (Јевтић), via [молитвеник.in.rs](https://www.molitvenik.in.rs/psaltir_index.html).
-- English Psalter translation: Brenton's English Septuagint (1851, public domain), via [ebible.org](https://ebible.org/eng-Brenton/).
+- Serbian: translation by Епископ Атанасије (Јевтић), via [молитвеник.in.rs](https://www.molitvenik.in.rs/psaltir_index.html)
+- English: Brenton's English Septuagint (1851), via [ebible.org](https://ebible.org/eng-Brenton/)
 - Prayers, troparia and the calendar follow the Serbian Orthodox Church's usage. Every liturgical text in the app should be checked against a printed molitvenik or Minej before release.
 
-## License
+## Licence
 
-Application code: MIT.
-The Psalter text is a translation of public-domain scripture; please credit the translator (Bishop Atanasije Jevtić) when redistributing the Serbian text.
+**Application code**: MIT — see [`LICENSE`](LICENSE).
+
+**The psalm texts are a separate matter.** The Psalms themselves are ancient and in the public domain, but a *translation* is its own copyrightable work, and the two translations here are not in the same position:
+
+- **English** — Brenton's *English Septuagint* (1851). Brenton died in 1862, so this translation is itself in the public domain.
+- **Serbian** — the translation of Bishop Atanasije (Jevtić), who died in 2021. Under Serbian copyright terms (life + 70 years) this translation is most likely still protected, and it is included here without an explicit licence from the rights holder.
+
+If you intend to distribute this app, or to expand the Serbian text beyond what is already here, settle that permission first — the rights holder would be his estate or publisher. This note describes the situation as understood; it is not legal advice.

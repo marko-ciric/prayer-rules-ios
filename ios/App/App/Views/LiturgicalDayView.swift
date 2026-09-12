@@ -204,18 +204,20 @@ struct LiturgicalDayView: View {
                 .foregroundColor(Theme.amber900.opacity(0.7))
             ForEach(numbers, id: \.self) { number in
                 if let kathisma = kathismata.first(where: { $0.number == number }) {
-                    Button(action: { onOpen(.psalm(kathisma.psalms.first ?? 1)) }) {
+                    let firstPsalm = kathisma.psalms.first ?? 1
+                    Button(action: { onOpen(.psalm(firstPsalm)) }) {
                         HStack(spacing: 10) {
                             Text("\(CalendarStrings.kathisma.text(language)) \(number)")
                                 .font(Theme.display(16, weight: .semibold))
                                 .foregroundColor(Theme.amber900)
-                            Text(kathisma.range)
+                            Text("\(kathisma.range) · \(CalendarStrings.openPsalm.text(language)) \(firstPsalm)")
                                 .font(Theme.serif(14))
                                 .foregroundColor(Theme.stone600)
                             Spacer(minLength: 0)
                             Text("›")
                                 .font(.system(size: 20))
                                 .foregroundColor(Theme.amber900.opacity(0.4))
+                                .accessibilityHidden(true)
                         }
                         .padding(.vertical, 8)
                         .padding(.horizontal, 10)
@@ -256,17 +258,30 @@ struct LiturgicalDayView: View {
                 Text("›")
                     .font(.system(size: 22))
                     .foregroundColor(Theme.amber900.opacity(0.4))
+                    .accessibilityHidden(true)
             }
             .padding(.vertical, 10)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(serviceAccessibilityLabel(service, language))
         .overlay(Rectangle().fill(Theme.amber900.opacity(0.12)).frame(height: 1), alignment: .bottom)
     }
 
     private func psalmSummary(_ service: Service, _ language: Language) -> String {
         let numbers = service.citedPsalms.map(String.init).joined(separator: " · ")
         return "\(CalendarStrings.openPsalm.text(language)) \(numbers)"
+    }
+
+    private func serviceAccessibilityLabel(_ service: Service, _ language: Language) -> String {
+        if !service.citedPsalms.isEmpty {
+            return "\(service.title.text(language)), \(psalmSummary(service, language))"
+        }
+        if let subtitle = service.subtitle {
+            return "\(service.title.text(language)), \(subtitle.text(language))"
+        }
+        return service.title.text(language)
     }
 
     @ViewBuilder

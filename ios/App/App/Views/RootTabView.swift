@@ -4,27 +4,37 @@ import SwiftUI
 /// calendar opened at the current day — and the Psalter, which used to be
 /// the whole app, is now one of them.
 struct RootTabView: View {
+    private enum Tab: Hashable {
+        case today
+        case calendar
+        case psalter
+    }
+
     @EnvironmentObject var lang: LanguageManager
     @EnvironmentObject var settings: ReaderSettings
 
     @State private var route: ReaderRoute? = nil
+    @State private var selectedTab: Tab = .today
     @State private var psalterSelection: Int? = nil
 
     var body: some View {
         let language = lang.language
 
-        TabView {
+        TabView(selection: $selectedTab) {
             TodayView(onOpen: { route = $0 })
+                .tag(Tab.today)
                 .tabItem {
                     Label(CalendarStrings.tabToday.text(language), systemImage: "sun.max")
                 }
 
             CalendarMonthView(onOpen: { route = $0 })
+                .tag(Tab.calendar)
                 .tabItem {
                     Label(CalendarStrings.tabCalendar.text(language), systemImage: "calendar")
                 }
 
             psalterTab
+                .tag(Tab.psalter)
                 .tabItem {
                     Label(CalendarStrings.tabPsalter.text(language), systemImage: "book.closed")
                 }
