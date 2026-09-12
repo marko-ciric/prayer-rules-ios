@@ -22,7 +22,19 @@ struct LanguageToggleView: View {
                         )
                         .cornerRadius(2)
                 }
+                .accessibilityLabel(accessibilityLabel(for: l))
+                .accessibilityAddTraits(lang.language == l ? [.isSelected] : [])
+                .accessibilityValue(lang.language == l ? CalendarStrings.selected.text(lang.language) : "")
             }
+        }
+    }
+
+    private func accessibilityLabel(for language: Language) -> String {
+        switch language {
+        case .sr:
+            return CalendarStrings.languageSerbian.text(lang.language)
+        case .en:
+            return CalendarStrings.languageEnglish.text(lang.language)
         }
     }
 }

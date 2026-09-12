@@ -157,18 +157,17 @@ struct ServiceView: View {
                             .kerning(1.5)
                             .textCase(.uppercase)
                             .foregroundColor(Theme.amber900.opacity(0.6))
-                        if let openingLine {
-                            Text(openingLine + "…")
-                                .font(Theme.serif(15))
-                                .foregroundColor(Theme.stone700)
-                                .lineLimit(2)
-                                .multilineTextAlignment(.leading)
-                        }
+                        Text(openingLine.map { $0 + "…" } ?? CalendarStrings.psalmPreviewUnavailable.text(language))
+                            .font(Theme.serif(15))
+                            .foregroundColor(Theme.stone700)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
                     }
                     Spacer(minLength: 0)
                     Text("›")
                         .font(.system(size: 22))
                         .foregroundColor(Theme.amber900.opacity(0.4))
+                        .accessibilityHidden(true)
                 }
                 .padding(12)
                 .contentShape(Rectangle())

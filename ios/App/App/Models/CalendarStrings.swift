@@ -48,12 +48,16 @@ enum CalendarStrings {
     // Service reader
     static let sectionPending = LocalizedText(sr: "Текст се припрема", en: "Text in preparation")
     static let openPsalm = LocalizedText(sr: "Псалам", en: "Psalm")
+    static let psalmPreviewUnavailable = LocalizedText(sr: "Почетни стих није доступан", en: "Opening verse unavailable")
 
     // Calendar
     static let legend = LocalizedText(sr: "Ознаке поста", en: "Fasting key")
     static let previousMonth = LocalizedText(sr: "Претходни месец", en: "Previous month")
     static let nextMonth = LocalizedText(sr: "Следећи месец", en: "Next month")
     static let jumpToToday = LocalizedText(sr: "На данашњи дан", en: "Go to today")
+    static let languageSerbian = LocalizedText(sr: "Српски", en: "Serbian")
+    static let languageEnglish = LocalizedText(sr: "Енглески", en: "English")
+    static let selected = LocalizedText(sr: "Изабрано", en: "Selected")
 
     // Standing note — the app states the general norm and says so plainly.
     static let fastingDisclaimer = LocalizedText(
