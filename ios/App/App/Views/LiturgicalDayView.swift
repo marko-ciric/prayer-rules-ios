@@ -264,12 +264,24 @@ struct LiturgicalDayView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(serviceAccessibilityLabel(service, language))
         .overlay(Rectangle().fill(Theme.amber900.opacity(0.12)).frame(height: 1), alignment: .bottom)
     }
 
     private func psalmSummary(_ service: Service, _ language: Language) -> String {
         let numbers = service.citedPsalms.map(String.init).joined(separator: " · ")
         return "\(CalendarStrings.openPsalm.text(language)) \(numbers)"
+    }
+
+    private func serviceAccessibilityLabel(_ service: Service, _ language: Language) -> String {
+        if !service.citedPsalms.isEmpty {
+            return "\(service.title.text(language)), \(psalmSummary(service, language))"
+        }
+        if let subtitle = service.subtitle {
+            return "\(service.title.text(language)), \(subtitle.text(language))"
+        }
+        return service.title.text(language)
     }
 
     @ViewBuilder

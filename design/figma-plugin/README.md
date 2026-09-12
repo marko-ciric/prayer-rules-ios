@@ -37,8 +37,8 @@ fasting year rather than as decoration.
 ## Fonts
 
 The app *intends* Cormorant Garamond (display) and EB Garamond (body); it
-currently ships system serif, and bundling the real faces is open work item 5
-in `CLAUDE.md`. The plugin tries to load both and falls back to Inter with a
+currently ships system serif, and bundling the real faces remains open work in
+`CLAUDE.md`. The plugin tries to load both and falls back to Inter with a
 notice if Figma doesn't have them — so what you see is the target state, not
 what a simulator would show today.
 
