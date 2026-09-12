@@ -77,3 +77,7 @@ ios/.xcode.env.local
 android/.gradle/
 android/app/build/
 android/build/
+
+# Seeded design-canvas payload — regenerate with seed-canvas.mjs, do not commit
+design/canvas/*.html
+!design/canvas/*.dc.html

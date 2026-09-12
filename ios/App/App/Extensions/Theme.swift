@@ -14,6 +14,27 @@ enum Theme {
     static let stone800 = Color(red: 0.161, green: 0.145, blue: 0.141) // #292524
     static let red900 = Color(red: 0.498, green: 0.114, blue: 0.114)   // #7f1d1d
 
+    // Fasting marks. Muted enough to sit inside the parchment palette and
+    // distinct enough to tell apart in a month grid — but the grid never
+    // relies on colour alone: every cell's day view spells the rule out, and
+    // the legend under the calendar names each band.
+    static let fastDairy = Color(red: 0.784, green: 0.635, blue: 0.290)     // #c8a24a
+    static let fastFish = Color(red: 0.373, green: 0.478, blue: 0.322)      // #5f7a52
+    static let fastWineOil = Color(red: 0.631, green: 0.400, blue: 0.184)   // #a1662f
+    static let fastStrict = Color(red: 0.247, green: 0.184, blue: 0.184)    // #3f2f2f
+
+    /// nil on a fast-free day, which is marked by the absence of a band.
+    static func fastColor(_ level: FastLevel) -> Color? {
+        switch level {
+        case .fastFree:  return nil
+        case .dairy:     return fastDairy
+        case .fish:      return fastFish
+        case .wineOil:   return fastWineOil
+        case .xerophagy: return red900
+        case .strict:    return fastStrict
+        }
+    }
+
     static let parchment = LinearGradient(
         colors: [Color(red: 0.980, green: 0.961, blue: 0.910), Color(red: 0.961, green: 0.937, blue: 0.878)],
         startPoint: .top, endPoint: .bottom

@@ -1,27 +1,14 @@
 import SwiftUI
 
-/// Root view — ports App.jsx. Holds the two pieces of state that used to
-/// live in App.jsx: which psalm is selected (nil = show the list) and the
-/// reader's font size, which survives back/forward navigation.
+/// Root view. Owns the two objects every screen reads from — the active
+/// language and the shared reading preferences — and hands off to the tabs.
 struct ContentView: View {
     @StateObject private var lang = LanguageManager()
-    @State private var selected: Int? = nil
-    @State private var fontSize: CGFloat = 18
+    @StateObject private var settings = ReaderSettings()
 
     var body: some View {
-        Group {
-            if let number = selected {
-                PsalmReaderView(
-                    number: number,
-                    fontSize: $fontSize,
-                    onBack: { selected = nil },
-                    onNavigate: { selected = $0 }
-                )
-            } else {
-                PsalmListView(onSelect: { selected = $0 })
-            }
-        }
-        .environmentObject(lang)
-        .animation(.default, value: selected)
+        RootTabView()
+            .environmentObject(lang)
+            .environmentObject(settings)
     }
 }
