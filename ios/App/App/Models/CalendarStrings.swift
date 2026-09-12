@@ -55,9 +55,9 @@ enum CalendarStrings {
     static let previousMonth = LocalizedText(sr: "Претходни месец", en: "Previous month")
     static let nextMonth = LocalizedText(sr: "Следећи месец", en: "Next month")
     static let jumpToToday = LocalizedText(sr: "На данашњи дан", en: "Go to today")
+    static let language = LocalizedText(sr: "Језик", en: "Language")
     static let languageSerbian = LocalizedText(sr: "Српски", en: "Serbian")
     static let languageEnglish = LocalizedText(sr: "Енглески", en: "English")
-    static let selected = LocalizedText(sr: "Изабрано", en: "Selected")
 
     // Standing note — the app states the general norm and says so plainly.
     static let fastingDisclaimer = LocalizedText(

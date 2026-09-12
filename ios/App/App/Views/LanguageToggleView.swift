@@ -22,9 +22,18 @@ struct LanguageToggleView: View {
                         )
                         .cornerRadius(2)
                 }
-                .accessibilityLabel(accessibilityLabel(for: l))
-                .accessibilityAddTraits(lang.language == l ? [.isSelected] : [])
-                .accessibilityValue(lang.language == l ? CalendarStrings.selected.text(lang.language) : "")
+                .accessibilityHidden(true)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(CalendarStrings.language.text(lang.language))
+        .accessibilityValue(accessibilityLabel(for: lang.language))
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment, .decrement:
+                lang.language = lang.language == .sr ? .en : .sr
+            @unknown default:
+                break
             }
         }
     }
